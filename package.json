@@ -1,0 +1,101 @@
+{
+  "name": "@searchfe/fis-http-push",
+  "version": "1.0.0",
+  "discription": "API for FIS http push",
+  "scripts": {
+    "preversion": "npm run lint && npm run cover",
+    "lint": "eslint src/**/*.ts",
+    "docs": "typedoc --out docs src && touch docs/.nojekyll",
+    "test": "jest",
+    "cover": "jest --coverage",
+    "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "commit": "git-cz",
+    "semantic-release": "semantic-release"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/searchfe/fis-http-push"
+  },
+  "homepage": "https://github.com/searchfe/fis-http-push",
+  "devDependencies": {
+    "@semantic-release/changelog": "^3.0.2",
+    "@semantic-release/commit-analyzer": "^6.1.0",
+    "@semantic-release/git": "^7.0.8",
+    "@semantic-release/npm": "^5.1.7",
+    "@semantic-release/release-notes-generator": "^7.1.4",
+    "@types/jest": "^24.0.11",
+    "@types/node": "^10.14.1",
+    "@typescript-eslint/eslint-plugin": "^2.3.0",
+    "@typescript-eslint/parser": "^2.3.0",
+    "commitizen": "^3.1.1",
+    "coveralls": "^3.0.2",
+    "cz-conventional-changelog": "^2.1.0",
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.15.0",
+    "eslint-plugin-jest": "^22.6.4",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "jest": "^24.7.1",
+    "nyc": "^13.0.1",
+    "semantic-release": "^15.13.31",
+    "source-map-support": "^0.5.9",
+    "ts-jest": "^24.0.2",
+    "ts-node": "^7.0.1",
+    "typedoc": "^0.12.0",
+    "typedoc-plugin-markdown": "^1.1.15",
+    "typescript": "3.4.5"
+  },
+  "release": {
+    "branch": "master",
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      "@semantic-release/git"
+    ]
+  },
+  "devDependencies": {
+    "makit": "*"
+  },
+  "peerDependencies": {
+    "makit": "^1.15.0"
+  },
+  "engines": {
+    "node": ">= 6.0.x"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "author": "",
+  "files": [
+    "dist",
+    "*.json",
+    "*.md"
+  ],
+  "nyc": {
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "**/*.d.ts"
+    ],
+    "reporter": [
+      "html"
+    ],
+    "all": true
+  }
+}

@@ -1,0 +1,19 @@
+# platform related
+.DS_Store
+._.DS_Store
+*.log
+
+# editor related
+.idea
+*.swp
+*.~
+.*.un~
+.vimrc
+.cache
+
+# build related
+dist/
+node_modules/
+test-reports/
+coverage/
+.nyc_output
