@@ -99,29 +99,6 @@ function requireToken(validateApi, info, cb) {
     });
 }
 
-export const Text = {
-    blod,
-    green,
-    grey,
-    yellow
-};
-
-function green(str: string) {
-    return '\u001b[32m' + str + '\u001b[39m';
-}
-
-function blod(str: string) {
-    return '\u001b[1m' + str + '\u001b[22m';
-}
-
-function yellow(str: string) {
-    return '\u001b[33m' + str + '\u001b[39m';
-}
-
-function grey(str: string) {
-    return '\u001b[90m' + str + '\u001b[39m';
-}
-
 export function parseTargetUrl(urlStr: string): Target {
     const url = new URL(urlStr);
     return {

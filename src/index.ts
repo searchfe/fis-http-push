@@ -1,4 +1,5 @@
 import {readFileSync} from 'fs';
+import chalk from 'chalk';
 import {upload} from './upload';
 import {requireEmail, parallelFactory, wait} from './util';
 
@@ -6,7 +7,7 @@ type OnEnd = (totalCount: number, successCount: number, failCount: number) => vo
 type OnProcess = (options: { path: string, to: string }) => void
 const defaultOnEnd = (totalCount, successCount, failCount) => {
     // eslint-disable-next-line
-    console.log(`deploy compeleted: total ${totalCount}, success ${successCount}, fail ${failCount}`);
+    console.log(chalk.green('compelete'), `total ${totalCount}, success ${successCount}, fail ${failCount}`);
 };
 
 interface PushOptions {

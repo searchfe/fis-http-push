@@ -1,6 +1,6 @@
+import chalk from 'chalk';
 import {parseUrl} from './fetch';
 import {getToken} from './token';
-import {Text} from './util';
 import {tryParseJSON} from './json';
 
 export function upload(receiver, path, to, contents, onProcess?: (options: {path: string, to: string}) => void) {
@@ -22,11 +22,10 @@ export function upload(receiver, path, to, contents, onProcess?: (options: {path
                     onProcess({path, to});
                 }
                 else {
-                    const time = '[' + getdate() + ']';
-                    process.stdout.write(
-                        Text.blod(Text.green('\n - '))
-                        + Text.grey(time) + ' '
-                        + path + Text.blod(Text.yellow(' >> ')) + to
+                    // TODO print only when verbose is on
+                    console.log( // eslint-disable-line
+                        chalk.green('[' + getdate() + ']'),
+                        path, chalk.yellow('>>'), to
                     );
                 }
                 resolve();
