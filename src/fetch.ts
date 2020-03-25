@@ -1,4 +1,4 @@
-import URL from 'url';
+import {parse} from 'url';
 import {tryParseJSON} from './json';
 
 export function fetch(url, data, callback) {
@@ -61,7 +61,7 @@ interface IOption {
 export function parseUrl(url, opt: IOption) {
     opt = opt || {};
     /* eslint-disable-next-line */
-    url = URL.parse(url);
+    url = parse(url);
     const ssl = url.protocol === 'https:';
     opt.host = opt.host || opt.hostname || ((ssl || url.protocol === 'http:') ? url.hostname : 'localhost');
     opt.port = opt.port || (url.port || (ssl ? 443 : 80));

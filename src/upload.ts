@@ -91,8 +91,8 @@ function fupload(url: string, opt: {[index: string]: any}, data: {[index: string
     };
 
     opt = parseUrl(url, opt);
-    const http = opt.protocol === 'https:' ? require('https') : require('http');
-    const req = http.request(opt, res => {
+    const {request} = opt.protocol === 'https:' ? require('https') : require('http');
+    const req = request(opt, res => {
         const status = res.statusCode;
         let body = '';
         res

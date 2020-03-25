@@ -217,7 +217,6 @@
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-misused-new": "error",
       "@typescript-eslint/consistent-type-assertions": "warn",
-      "@typescript-eslint/no-type-alias": "warn",
       "@typescript-eslint/no-unused-vars": "warn",
       "@typescript-eslint/prefer-function-type": "error",
       "import/default": "error",
@@ -237,7 +236,6 @@
       "import/newline-after-import": "error",
       "import/no-absolute-path": "error",
       "import/no-amd": "warn",
-      "import/no-commonjs": "warn",
       "import/no-deprecated": "error",
       "import/no-dynamic-require": "warn",
       "import/no-extraneous-dependencies": "off",
@@ -252,7 +250,6 @@
       "import/no-unresolved": "off",
       "import/no-webpack-loader-syntax": "warn",
       "import/order": "warn",
-      "import/prefer-default-export": "off",
-      "import/unambiguous": "error"
+      "import/prefer-default-export": "off"
     }
   }

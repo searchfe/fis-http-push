@@ -2,6 +2,11 @@ import * as prompt from 'prompt';
 import {fetch} from './fetch';
 import {getToken, writeToken} from './token';
 
+interface Target {
+    receiver: string;
+    path: string;
+}
+
 type Callback = (error?: Error) => void;
 
 const waiting: Callback[] = [];
@@ -115,6 +120,14 @@ function yellow(str: string) {
 
 function grey(str: string) {
     return '\u001b[90m' + str + '\u001b[39m';
+}
+
+export function parseTargetUrl(urlStr: string): Target {
+    const url = new URL(urlStr);
+    return {
+        'receiver': url.origin,
+        'path': url.pathname
+    };
 }
 
 type ParallelFn = (...args: any[]) => Promise<any>;

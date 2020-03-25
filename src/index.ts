@@ -2,7 +2,41 @@ import {readFileSync} from 'fs';
 import {upload} from './upload';
 import {requireEmail, parallelFactory, wait} from './util';
 
-export function pushFactory(options) {
+type OnEnd = (totalCount: number, successCount: number, failCount: number) => void
+type OnProcess = (options: { path: string, to: string }) => void
+const defaultOnEnd = (totalCount, successCount, failCount) => {
+    // eslint-disable-next-line
+    console.log(`deploy compeleted: total ${totalCount}, success ${successCount}, fail ${failCount}`);
+};
+
+interface PushOptions {
+    receiver: string;
+    retry?: number;
+    parallelPushCount?: number;
+    uploadAPI?: string;
+    authAPI?: string;
+    validateAPI?: string;
+    onEnd?: OnEnd
+    onProcess?: OnProcess
+}
+
+// 新接口，先包装旧接口实现
+export function push(path: string, to: string, options: PushOptions) {
+    const push = pushFactory(options);
+    return new Promise((resolve, reject) => {
+        push(path, to, path, (err, ret) => {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(ret);
+            }
+        });
+    });
+}
+
+// 给 makit-plugin 用，旧接口，逐步改造掉
+export function pushFactory(options: PushOptions) {
     const {
         uploadAPI,
         authAPI, validateAPI,
@@ -11,10 +45,7 @@ export function pushFactory(options) {
         onProcess
     } = normalize(options);
 
-    return parallelFactory(push, parallelPushCount, onEnd || ((totalCount, successCount, failCount) => {
-        // eslint-disable-next-line
-        console.log(`deploy compeleted: total ${totalCount}, success ${successCount}, fail ${failCount}`);
-    }));
+    return parallelFactory(push, parallelPushCount, onEnd || defaultOnEnd);
 
     function requireToken(error) {
         return new Promise((resolve, reject) => {
@@ -44,15 +75,11 @@ export function pushFactory(options) {
                 else if (availableRetry > 0) {
                     return wait(100).then(push(path, to, dep, done, availableRetry - 1));
                 }
-
-                // 出错就退出
-                setTimeout(() => {
-                    throw new Error(error.errmsg || error);
-                }, 0);
+                throw error;
             });
     }
 
-    function normalize(options) {
+    function normalize(options: PushOptions): PushOptions {
         if (options.receiver) {
             options.uploadAPI = options.receiver + '/v1/upload';
             options.authAPI = options.receiver + '/v1/authorize';
