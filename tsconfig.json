@@ -16,7 +16,7 @@
     ],
     "skipLibCheck": true,
     "noImplicitAny": false,
-    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "resolveJsonModule": true,
     "downlevelIteration": true,
     "strict": false,

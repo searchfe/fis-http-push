@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import {success} from './log';
 import {parseUrl} from './fetch';
 import {getToken} from './token';
 import {tryParseJSON} from './json';
@@ -23,10 +24,7 @@ export function upload(receiver, path, to, contents, onProcess?: (options: {path
                 }
                 else {
                     // TODO print only when verbose is on
-                    console.log( // eslint-disable-line
-                        chalk.green('[' + getdate() + ']'),
-                        path, chalk.yellow('>>'), to
-                    );
+                    success(path, chalk.yellow('>>'), to);
                 }
                 resolve();
             }
@@ -102,11 +100,4 @@ function fupload(url: string, opt: {[index: string]: any}, data: {[index: string
     req.on('error', err => callback(err.message || err));
     collect.forEach(d => req.write(d));
     req.end();
-}
-
-function getdate() {
-    const now = new Date();
-    const m = now.getMonth() + 1;
-    const d = now.getDate();
-    return (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d) + ' ' + now.toTimeString().substr(0, 8);
 }
