@@ -2,6 +2,10 @@
   "name": "@searchfe/fis-http-push",
   "version": "1.0.0",
   "discription": "API for FIS http push",
+  "bin": {
+    "fcp": "dist/bin/fcp.js",
+    "fis-http-push": "dist/bin/fcp.js"
+  },
   "scripts": {
     "preversion": "npm run lint && npm run cover",
     "lint": "eslint src/**/*.ts",
@@ -12,7 +16,8 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "commit": "git-cz",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "check": "npm run lint && npm run test"
   },
   "config": {
     "commitizen": {
@@ -45,14 +50,15 @@
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
     "jest": "^24.7.1",
+    "makit": "*",
     "nyc": "^13.0.1",
     "semantic-release": "^15.13.31",
     "source-map-support": "^0.5.9",
     "ts-jest": "^24.0.2",
     "ts-node": "^7.0.1",
-    "typedoc": "^0.12.0",
+    "typedoc": "^0.17.3",
     "typedoc-plugin-markdown": "^1.1.15",
-    "typescript": "3.4.5"
+    "typescript": "^3.8.3"
   },
   "release": {
     "branch": "master",
@@ -63,9 +69,6 @@
       "@semantic-release/npm",
       "@semantic-release/git"
     ]
-  },
-  "devDependencies": {
-    "makit": "*"
   },
   "peerDependencies": {
     "makit": "^1.15.0"
@@ -97,5 +100,10 @@
       "html"
     ],
     "all": true
+  },
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "prompt": "^1.0.0",
+    "yargs": "^15.3.1"
   }
 }
