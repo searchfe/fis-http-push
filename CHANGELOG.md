@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/searchfe/fis-http-push/compare/v1.0.0...v1.0.1) (2020-03-25)
+
+
+### Bug Fixes
+
+* 输出中的换行和格式混乱 ([0ffdb3d](https://github.com/searchfe/fis-http-push/commit/0ffdb3d7d68a0c95667202832a80015949894f80))
+
 # 1.0.0 (2020-03-25)
 
 
