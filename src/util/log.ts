@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-function log(color, ...args) {
+function impl(color, ...args) {
     const timeInfo = '[' + dateStr() + ']';
     process.stdout.write(chalk[color](timeInfo));
     for (const arg of args) {
@@ -11,7 +11,11 @@ function log(color, ...args) {
 }
 
 export function success(...args) {
-    log('green', ...args);
+    impl('green', ...args);
+}
+
+export function log(...args) {
+    impl('dim', ...args);
 }
 
 function dateStr() {

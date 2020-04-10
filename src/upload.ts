@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import debugFactory from 'debug';
-import {success} from './log';
+import {success} from './util/log';
 import {parseUrl} from './fetch';
 import {getToken} from './token';
 import {tryParseJSON} from './json';

@@ -3,7 +3,7 @@ import debugFactory from 'debug';
 import {upload} from './upload';
 import {requireEmail, parallelFactory, wait} from './util';
 import {fromCallback} from './util/promise';
-import {success} from './log';
+import {success} from './util/log';
 
 type OnEnd = (totalCount: number, successCount: number, failCount: number) => void
 type OnProcess = (options: { path: string, to: string }) => void

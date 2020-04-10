@@ -1,11 +1,11 @@
 import {URLSearchParams} from 'url';
 import nock from 'nock';
 import debugFactory from 'debug';
+import {EMAIL, TOKEN, CODE} from './token';
 
-const EMAIL = 'harttle@example.com';
-const TOKEN = 'MOCK_TOKEN';
-const CODE = 'MOCK_CODE';
 const debug = debugFactory('fhp');
+
+export const receiver = 'http://localhost:1080';
 
 export function startServer() {
     nock('http://localhost:1080')
@@ -26,7 +26,7 @@ function upload(uri, body) {
     const file = getField('file', body);
 
     if (email !== EMAIL) {
-        debug('responding invalid email');
+        debug(`responding invalid email: "${email}" !== "${EMAIL}"`);
         return [200, {'errno': 100001, 'errmsg': 'invalid email'}];
     }
     else if (token !== TOKEN || code !== CODE) {
