@@ -1,39 +1,23 @@
 import fs from 'fs';
 import debugFactory from 'debug';
+import {Options, FullOptions} from './options';
 import {upload} from './upload';
 import {requireEmail, parallelFactory, wait} from './util';
 import {fromCallback} from './util/promise';
 import {success} from './util/log';
 
-type OnEnd = (totalCount: number, successCount: number, failCount: number) => void
-type OnProcess = (options: { path: string, to: string }) => void
 const defaultOnEnd = (totalCount, successCount, failCount) => {
     success(`total ${totalCount}, success ${successCount}, fail ${failCount}`);
 };
 const debug = debugFactory('fhp');
 
-interface PushOptions {
-    receiver: string;
-    retry?: number;
-    parallelPushCount?: number;
-    uploadAPI?: string;
-    authAPI?: string;
-    validateAPI?: string;
-    onEnd?: OnEnd;
-    onProcess?: OnProcess;
-    readEmail?: (savedEmail: string) => Promise<string>;
-    readCode?: () => Promise<string>;
-}
-
-// 新接口，先包装旧接口实现
-export function push(path: string, to: string, options: PushOptions) {
+export function push(path: string, to: string, options: Options) {
     const push = pushFactory(options);
     return fromCallback(cb => push(path, to, path, cb));
 }
 
-// 给 makit-plugin 用，旧接口，逐步改造掉
-export function pushFactory(options: PushOptions) {
-    options = normalize(options);
+export function pushFactory(raw: Options) {
+    const options = normalize(raw);
     const {
         uploadAPI,
         retry, parallelPushCount,
@@ -57,11 +41,6 @@ export function pushFactory(options: PushOptions) {
     }
 
     function push(path, to, dep, done, availableRetry = retry) {
-        // 强制挂掉
-        if (!uploadAPI) {
-            throw new Error('options.receiver is required!');
-        }
-
         // 真正 push 时再读文件
         const contents = fs.readFileSync(dep);
 
@@ -82,14 +61,15 @@ export function pushFactory(options: PushOptions) {
             });
     }
 
-    function normalize(options: PushOptions): PushOptions {
-        if (options.receiver) {
-            options.uploadAPI = options.receiver + '/v1/upload';
-            options.authAPI = options.receiver + '/v1/authorize';
-            options.validateAPI = options.receiver + '/v1/validate';
-        }
-        options.retry = options.retry || 3;
-        options.parallelPushCount = options.parallelPushCount || 100;
-        return options;
+    function normalize(options: Options): FullOptions {
+        if (!options.receiver) throw new Error('options.receiver is required!');
+        return {
+            ...options,
+            uploadAPI: options.receiver + '/v1/upload',
+            authAPI: options.receiver + '/v1/authorize',
+            validateAPI: options.receiver + '/v1/validate',
+            retry: options.retry || 3,
+            parallelPushCount: options.parallelPushCount || 100
+        };
     }
 }

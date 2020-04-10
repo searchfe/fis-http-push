@@ -58,7 +58,7 @@ describe('邮件验证功能', () => {
         expect(readCode).toBeCalledTimes(0);
     });
 
-    it.only('可以使用 fhp 缓存里的 token', async () => {
+    it('可以使用 fhp 缓存里的 token', async () => {
         mock({
             '/foo.txt': 'FOO',
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
