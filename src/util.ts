@@ -12,13 +12,8 @@ interface Target {
 
 type Callback = (error?: Error) => void;
 
-const waiting: Callback[] = [];
 const debug = debugFactory('fhp');
 prompt.start();
-
-function resolve(err?: Error) {
-    while (waiting.length) waiting.pop()!(err);
-}
 
 const defaultReadEmail = savedEmail => fromCallback<{email: string}>(cb => prompt.get({
     properties: {
@@ -42,7 +37,7 @@ const defaultReadCode = () => fromCallback<{code: string}>(cb => prompt.get({
     }
 }, cb)).then(ret => ret.code);
 
-export function requireEmail(options, prevError, cb: Callback) {
+export async function authenticate(options, prevError): Promise<any> {
     debug('require email called');
     const {
         authAPI,
@@ -51,58 +46,51 @@ export function requireEmail(options, prevError, cb: Callback) {
         readCode = defaultReadCode
     } = options;
 
-    if (!authAPI || !validateAPI) {
-        return cb(new Error('options.authAPI and options.validateApi is required!'));
-    }
-
-    waiting.push(cb);
-    // already getting
-    if (waiting.length > 1) {
-        debug('already requiring, skip');
-        return;
-    }
-
     const info = getToken();
     if (info.email) {
         process.stdout.write('Token is invalid: ' + prevError.errmsg + '\n');
     }
 
     debug('reading email...');
-    readEmail(info.email).then(email => {
+    return readEmail(info.email).then(email => {
         debug('email input:', email);
         info.email = email;
         writeToken(info);
 
-        fetch(authAPI, {email}, err => {
-            if (err) {
-                return resolve(err);
-            }
+        return new Promise((resolve, reject) => {
+            fetch(authAPI, {email}, err => {
+                if (err) return reject(err);
 
-            log('We\'ve already sent the code to your email.');
-            requireToken(validateAPI, info, readCode, resolve);
+                log('We\'ve already sent the code to your email.');
+                requireToken(validateAPI, info, readCode)
+                    .then(ret => resolve(ret))
+                    .catch(err => reject(err));
+            });
         });
-    }).catch(error => resolve(error));
+    });
 }
 
-function requireToken(validateApi, info, readCode, cb) {
+function requireToken(validateApi, info, readCode) {
     debug('reading code...');
-    readCode().then(code => {
+    return readCode().then(code => {
         debug('email input:', code);
         info.code = code;
         writeToken(info);
-        fetch(validateApi, {
-            'code': info.code,
-            'email': info.email
-        }, (err, rs) => {
-            if (err) {
-                return cb(err);
-            }
+        return new Promise((resolve, reject) => {
+            fetch(validateApi, {
+                'code': info.code,
+                'email': info.email
+            }, (err, rs) => {
+                if (err) {
+                    return reject(err);
+                }
 
-            info.token = rs.data.token;
-            writeToken(info);
-            cb(null, info);
+                info.token = rs.data.token;
+                writeToken(info);
+                resolve(info);
+            });
         });
-    }).catch(error => cb(error));
+    });
 }
 
 export function parseTargetUrl(urlStr: string): Target {

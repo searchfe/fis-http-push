@@ -1,3 +1,4 @@
+import fs from 'fs';
 import chalk from 'chalk';
 import debugFactory from 'debug';
 import {success} from './util/log';
@@ -7,8 +8,9 @@ import {tryParseJSON} from './json';
 
 const debug = debugFactory('fhp');
 
-export function upload(receiver, path, to, contents, onProcess?: (options: {path: string, to: string}) => void) {
+export function upload(receiver, path, to, onProcess?: (options: {path: string, to: string}) => void) {
     return new Promise((resolve, reject) => {
+        const contents = fs.readFileSync(path);
         const data = {...getToken(), to};
         fupload(receiver, null, data, contents, path, (err, res) => {
             debug('fupload returned', res);

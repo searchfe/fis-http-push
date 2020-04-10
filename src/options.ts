@@ -19,3 +19,15 @@ export interface FullOptions extends Options {
     authAPI: string;
     validateAPI: string;
 }
+
+export function normalize(options: Options): FullOptions {
+    if (!options.receiver) throw new Error('options.receiver is required!');
+    return {
+        ...options,
+        uploadAPI: options.receiver + '/v1/upload',
+        authAPI: options.receiver + '/v1/authorize',
+        validateAPI: options.receiver + '/v1/validate',
+        retry: options.retry || 3,
+        parallelPushCount: options.parallelPushCount || 100
+    };
+}
