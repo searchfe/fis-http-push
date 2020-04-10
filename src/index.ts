@@ -1,6 +1,8 @@
-import {readFileSync} from 'fs';
+import fs from 'fs';
+import debugFactory from 'debug';
 import {upload} from './upload';
 import {requireEmail, parallelFactory, wait} from './util';
+import {fromCallback} from './util/promise';
 import {success} from './log';
 
 type OnEnd = (totalCount: number, successCount: number, failCount: number) => void
@@ -8,6 +10,7 @@ type OnProcess = (options: { path: string, to: string }) => void
 const defaultOnEnd = (totalCount, successCount, failCount) => {
     success(`total ${totalCount}, success ${successCount}, fail ${failCount}`);
 };
+const debug = debugFactory('fhp');
 
 interface PushOptions {
     receiver: string;
@@ -16,40 +19,35 @@ interface PushOptions {
     uploadAPI?: string;
     authAPI?: string;
     validateAPI?: string;
-    onEnd?: OnEnd
-    onProcess?: OnProcess
+    onEnd?: OnEnd;
+    onProcess?: OnProcess;
+    readEmail?: (savedEmail: string) => Promise<string>;
+    readCode?: () => Promise<string>;
 }
 
 // 新接口，先包装旧接口实现
 export function push(path: string, to: string, options: PushOptions) {
     const push = pushFactory(options);
-    return new Promise((resolve, reject) => {
-        push(path, to, path, (err, ret) => {
-            if (err) {
-                reject(err);
-            }
-            else {
-                resolve(ret);
-            }
-        });
-    });
+    return fromCallback(cb => push(path, to, path, cb));
 }
 
 // 给 makit-plugin 用，旧接口，逐步改造掉
 export function pushFactory(options: PushOptions) {
+    options = normalize(options);
     const {
         uploadAPI,
-        authAPI, validateAPI,
         retry, parallelPushCount,
         onEnd,
         onProcess
-    } = normalize(options);
+    } = options;
 
     return parallelFactory(push, parallelPushCount, onEnd || defaultOnEnd);
 
-    function requireToken(error) {
+    function authenticate(error) {
         return new Promise((resolve, reject) => {
-            requireEmail(authAPI, validateAPI, error, err => {
+            debug('requiring email');
+            requireEmail(options, error, err => {
+                debug('require email returned', err);
                 if (err) {
                     return reject(new Error('Auth failed! ' + err['errmsg']));
                 }
@@ -65,16 +63,21 @@ export function pushFactory(options: PushOptions) {
         }
 
         // 真正 push 时再读文件
-        const contents = readFileSync(dep);
+        const contents = fs.readFileSync(dep);
 
         return upload(uploadAPI, path, to, contents, onProcess)
+            .then(() => done())
             .catch(error => {
                 if (error.errno > 100000) {
-                    return requireToken(error).then(() => push(path, to, dep, done, availableRetry));
+                    debug('upload error, authenticating...');
+                    return authenticate(error).then(() => push(path, to, dep, done, availableRetry));
                 }
                 else if (availableRetry > 0) {
+                    debug('upload error, waiting to retry...');
                     return wait(100).then(push(path, to, dep, done, availableRetry - 1));
                 }
+                debug('upload error, terminating...');
+                done(error);
                 throw error;
             });
     }

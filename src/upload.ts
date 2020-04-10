@@ -1,13 +1,17 @@
 import chalk from 'chalk';
+import debugFactory from 'debug';
 import {success} from './log';
 import {parseUrl} from './fetch';
 import {getToken} from './token';
 import {tryParseJSON} from './json';
 
+const debug = debugFactory('fhp');
+
 export function upload(receiver, path, to, contents, onProcess?: (options: {path: string, to: string}) => void) {
     return new Promise((resolve, reject) => {
         const data = {...getToken(), to};
         fupload(receiver, null, data, contents, path, (err, res) => {
+            debug('fupload returned', res);
             res = res && res.trim();
             const json = tryParseJSON<{errno: number}>(res);
 

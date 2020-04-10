@@ -4,6 +4,7 @@
   "discription": "API for FIS http push",
   "bin": {
     "fcp": "dist/bin/fcp.js",
+    "fhp": "dist/bin/fcp.js",
     "fis-http-push": "dist/bin/fcp.js"
   },
   "scripts": {
@@ -51,6 +52,8 @@
     "eslint-plugin-standard": "^4.0.0",
     "jest": "^24.7.1",
     "makit": "*",
+    "mock-fs": "^4.11.0",
+    "nock": "^12.0.3",
     "nyc": "^13.0.1",
     "semantic-release": "^15.13.31",
     "source-map-support": "^0.5.9",
@@ -103,6 +106,7 @@
   },
   "dependencies": {
     "chalk": "^3.0.0",
+    "debug": "^4.1.1",
     "prompt": "^1.0.0",
     "yargs": "^15.3.1"
   }

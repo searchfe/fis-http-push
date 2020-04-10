@@ -17,12 +17,10 @@
     ],
     "rules": {
       "array-bracket-spacing": ["error", "never"],
-      "arrow-parens": ["error", "as-needed"],
       "arrow-spacing": "error",
       "brace-style": ["warn", "stroustrup"],
       "comma-dangle": "error",
       "computed-property-spacing": ["error", "never"],
-      "curly": ["error", "all"],
       "default-case": [
         "error",
         {
@@ -183,7 +181,6 @@
       "prefer-const": "off",
       "prefer-rest-params": "error",
       "prefer-spread": "error",
-      "quote-props": ["warn", "always"],
       "quotes": ["error", "single"],
       "radix": "error",
       "semi": ["error", "always"],

@@ -17,3 +17,10 @@ push('./main.js', '/var/www/main.js', {receiver: 'http://example.com:8210'})
 npm i -g fis-http-push
 fcp ./main.js http://example.com:8210/var/www/main.js
 ```
+
+## Makit 中使用
+
+```javascript
+const {push} = require('fis-http-push');
+rule('http://example.com:8210/foo.txt', 'foo.txt', push)
+```

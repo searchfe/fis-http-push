@@ -2,7 +2,12 @@ import chalk from 'chalk';
 
 function log(color, ...args) {
     const timeInfo = '[' + dateStr() + ']';
-    console.log(chalk[color](timeInfo), ...args) // eslint-disable-line
+    process.stdout.write(chalk[color](timeInfo));
+    for (const arg of args) {
+        process.stdout.write(' ');
+        process.stdout.write(arg);
+    }
+    process.stdout.write('\n');
 }
 
 export function success(...args) {
