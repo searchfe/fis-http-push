@@ -7,7 +7,10 @@ const debug = debugFactory('fhp');
 
 export const receiver = 'http://localhost:1080';
 
+export const serverFileSystem = new Map();
+
 export function startServer() {
+    serverFileSystem.clear();
     nock('http://localhost:1080')
         .persist()
         .post('/v1/upload').reply(upload)
@@ -35,10 +38,11 @@ function upload(uri, body) {
     }
     else if (!/^\/tmp\//.test(to)) {
         debug('responding invalid path');
-        return [200, {'errno': 100003, 'errmsg': 'invalid path'}];
+        return [200, {'errno': 100503, 'errmsg': '未授权的文件部署路径，请加入配置白名单中'}];
     }
     const size = Buffer.from(file).length;
     debug('responding success');
+    serverFileSystem.set(to, file);
     return [200, {errno: 0, msg: `${size} bytes uploaded`}];
 }
 

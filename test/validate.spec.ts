@@ -4,7 +4,7 @@ import {clear, FHP_TOKEN_FILE} from '../src/token';
 import {startServer, receiver} from './stub/server';
 import {TOKEN_FILE_CONTENT, EMAIL, CODE} from './stub/token';
 
-describe('Token 验证功能', () => {
+describe('邮件验证功能', () => {
     let readEmail;
     let readCode;
     beforeEach(() => {
