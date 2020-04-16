@@ -14,6 +14,10 @@ export function success(...args) {
     impl('green', ...args);
 }
 
+export function error(...args) {
+    impl('red', ...args);
+}
+
 export function log(...args) {
     impl('dim', ...args);
 }

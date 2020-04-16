@@ -8,8 +8,9 @@ import {tryParseJSON} from './json';
 
 const debug = debugFactory('fhp');
 
-export function upload(receiver, path, to, onProcess?: (options: {path: string, to: string}) => void) {
+export function upload(receiver, path, to) {
     return new Promise((resolve, reject) => {
+        process.stdout.write('reading file: ' + path + '\n');
         const contents = fs.readFileSync(path);
         const data = {...getToken(), to};
         fupload(receiver, null, data, contents, path, (err, res) => {
@@ -25,13 +26,8 @@ export function upload(receiver, path, to, onProcess?: (options: {path: string, 
                 reject(info);
             }
             else {
-                if (onProcess) {
-                    onProcess({path, to});
-                }
-                else {
-                    // TODO print only when verbose is on
-                    success(path, chalk.yellow('>>'), to);
-                }
+                // TODO print only when verbose is on
+                success(path, chalk.yellow('>>'), to);
                 resolve();
             }
         });

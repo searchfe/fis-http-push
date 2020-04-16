@@ -10,6 +10,7 @@
   "rules": {
     "import/unambiguous": "off",
     "import/first": "off",
+    "max-lines-per-function": "off",
     "@typescript-eslint/no-explicit-any": "off"
   },
   "globals": {

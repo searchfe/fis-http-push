@@ -30,11 +30,11 @@ function upload(uri, body) {
 
     if (email !== EMAIL) {
         debug(`responding invalid email: "${email}" !== "${EMAIL}"`);
-        return [200, {'errno': 100001, 'errmsg': 'invalid email'}];
+        return [200, {'errno': 100305, 'errmsg': 'invalid email'}];
     }
     else if (token !== TOKEN || code !== CODE) {
         debug('responding invalid token');
-        return [200, {'errno': 100002, 'errmsg': 'invalid token'}];
+        return [200, {'errno': 100305, 'errmsg': 'invalid token'}];
     }
     else if (!/^\/tmp\//.test(to)) {
         debug('responding invalid path');

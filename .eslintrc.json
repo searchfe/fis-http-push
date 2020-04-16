@@ -143,7 +143,6 @@
         }
       ],
       "no-lone-blocks": "warn",
-      "no-loop-func": "warn",
       "no-multi-spaces": [
         "error",
         {

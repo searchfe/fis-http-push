@@ -5,7 +5,8 @@ type OnProcess = (options: { path: string, to: string }) => void
 export interface Options {
     receiver: string;
     retry?: number;
-    parallelPushCount?: number;
+    fastFail?: boolean;
+    concurrentLimit?: number;
     onEnd?: OnEnd;
     onProcess?: OnProcess;
     readEmail?: (savedEmail: string) => Promise<string>;
@@ -14,7 +15,7 @@ export interface Options {
 
 export interface FullOptions extends Options {
     retry: number;
-    parallelPushCount: number;
+    concurrentLimit: number;
     uploadAPI: string;
     authAPI: string;
     validateAPI: string;
@@ -28,6 +29,6 @@ export function normalize(options: Options): FullOptions {
         authAPI: options.receiver + '/v1/authorize',
         validateAPI: options.receiver + '/v1/validate',
         retry: options.retry || 3,
-        parallelPushCount: options.parallelPushCount || 100
+        concurrentLimit: options.concurrentLimit || 100
     };
 }
