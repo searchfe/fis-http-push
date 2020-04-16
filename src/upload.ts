@@ -10,7 +10,6 @@ const debug = debugFactory('fhp');
 
 export function upload(receiver, path, to) {
     return new Promise((resolve, reject) => {
-        process.stdout.write('reading file: ' + path + '\n');
         const contents = fs.readFileSync(path);
         const data = {...getToken(), to};
         fupload(receiver, null, data, contents, path, (err, res) => {
@@ -43,7 +42,14 @@ export function upload(receiver, path, to) {
  * @param  filename 上传文件的文件名
  * @param  callback 上传后的回调
  */
-function fupload(url: string, opt: {[index: string]: any}, data: {[index: string]: string | undefined}, content: string | Buffer, filename: string, callback: Function) {
+function fupload(
+    url: string,
+    opt: {[index: string]: any},
+    data: {[index: string]: string | undefined},
+    content: string | Buffer,
+    filename: string,
+    callback: Function
+) {
     if (typeof content === 'string') {
         content = Buffer.from(content, 'utf8');
     }
