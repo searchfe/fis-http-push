@@ -22,6 +22,7 @@ export function upload(receiver, path, to) {
             }
             else if (err || (!json && res !== '0')) {
                 const info = 'upload file [' + path + '] to [' + to + '] by receiver [' + receiver + '] error [' + (err || res) + ']';
+                debug('upload rejecting with', info);
                 reject(info);
             }
             else {
@@ -102,7 +103,7 @@ function fupload(
         let body = '';
         res
             .on('data', chunk => (body += chunk))
-            .on('end', () => ((status >= 200 && status < 300) || status === 304 ? callback(null, body) : callback(status)))
+            .on('end', () => ((status >= 200 && status < 300) || status === 304 ? callback(null, body) : callback(new Error(`${status}: ${body}`))))
             .on('error', err => callback(err.message || err));
     });
     req.on('error', err => callback(err.message || err));

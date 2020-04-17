@@ -35,3 +35,14 @@ fcp ./main.js http://example.com:8210/var/www/main.js
 const {push} = require('fis-http-push');
 rule('http://example.com:8210/foo.txt', 'foo.txt', push)
 ```
+
+## 开发指南
+
+运行测试：
+
+```bash
+npm install
+npm test
+```
+
+打日志：由于 mock-fs 和 Jest 对 `console.log` 的处理存在冲突。生产环境日志请使用 `/src/util/log`；开发环境日志请使用 `import 'debug'`。

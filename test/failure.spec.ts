@@ -20,11 +20,19 @@ describe('各种失败场景', () => {
         return expect(push('foo.txt', '/tmp/foo.txt', opts)).rejects.toHaveProperty('message', 'ENOENT: no such file or directory, open \'foo.txt\'');
     });
 
-    it.skip('远程目录不在白名单', async () => {
+    it('远程目录不在白名单', async () => {
         mock({
             '/bar.txt': 'FOO',
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
         await expect(push('/bar.txt', '/bar', opts)).rejects.toHaveProperty('errmsg', '未授权的文件部署路径，请加入配置白名单中');
+    });
+
+    it('其他错误', () => {
+        mock({
+            '/bar.txt': 'FOO',
+            [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
+        });
+        return expect(push('/bar.txt', '/unkown-error', opts)).rejects.toEqual('upload file [/bar.txt] to [/unkown-error] by receiver [http://localhost:1080/v1/upload] error [Error: 500: UNKOWN]');
     });
 });

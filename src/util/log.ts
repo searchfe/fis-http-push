@@ -1,4 +1,7 @@
 import chalk from 'chalk';
+import debugFactory from 'debug';
+
+export const debug = debugFactory('fhp');
 
 function impl(color, ...args) {
     const timeInfo = '[' + dateStr() + ']';

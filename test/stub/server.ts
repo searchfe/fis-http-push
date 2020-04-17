@@ -36,10 +36,15 @@ function upload(uri, body) {
         debug('responding invalid token');
         return [200, {'errno': 100305, 'errmsg': 'invalid token'}];
     }
+    else if (to === '/unkown-error') {
+        debug('responding unkown error');
+        return [500, 'UNKOWN'];
+    }
     else if (!/^\/tmp\//.test(to)) {
         debug('responding invalid path');
         return [200, {'errno': 100503, 'errmsg': '未授权的文件部署路径，请加入配置白名单中'}];
     }
+
     const size = Buffer.from(file).length;
     debug('responding success');
     serverFileSystem.set(to, file);

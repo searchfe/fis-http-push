@@ -37,6 +37,7 @@ const defaultReadCode = () => fromCallback<{code: string}>(cb => prompt.get({
     }
 }, cb)).then(ret => ret.code);
 
+// TODO remove prevError
 export async function authenticate(options, prevError): Promise<any> {
     debug('require email called');
     const {
