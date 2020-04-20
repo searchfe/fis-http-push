@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/searchfe/fis-http-push/compare/v1.0.1...v1.1.0) (2020-04-20)
+
+
+### Features
+
+* promise singleton ([30a1813](https://github.com/searchfe/fis-http-push/commit/30a181335f64d9a68820cf03b4a3213db1ce2529))
+
 ## [1.0.1](https://github.com/searchfe/fis-http-push/compare/v1.0.0...v1.0.1) (2020-03-25)
 
 
