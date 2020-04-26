@@ -17,7 +17,7 @@ describe('各种失败场景', () => {
         mock({
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
-        return expect(push('foo.txt', '/tmp/foo.txt', opts)).rejects.toHaveProperty('message', 'ENOENT: no such file or directory, open \'foo.txt\'');
+        return expect(push('foo.txt', '/tmp/foo.txt', opts)).rejects.toHaveProperty('message', 'Upload file "foo.txt" to "http://localhost:1080/tmp/foo.txt" failed: "ENOENT: no such file or directory, open \'foo.txt\'"');
     });
 
     it('远程目录不在白名单', async () => {
@@ -25,7 +25,7 @@ describe('各种失败场景', () => {
             '/bar.txt': 'FOO',
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
-        await expect(push('/bar.txt', '/bar', opts)).rejects.toHaveProperty('errmsg', '未授权的文件部署路径，请加入配置白名单中');
+        await expect(push('/bar.txt', '/bar', opts)).rejects.toHaveProperty('message', 'Upload file "/bar.txt" to "http://localhost:1080/bar" failed: "100503 未授权的文件部署路径，请加入配置白名单中"');
     });
 
     it('其他错误', () => {
@@ -33,6 +33,6 @@ describe('各种失败场景', () => {
             '/bar.txt': 'FOO',
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
-        return expect(push('/bar.txt', '/unkown-error', opts)).rejects.toEqual('upload file [/bar.txt] to [/unkown-error] by receiver [http://localhost:1080/v1/upload] error [Error: 500: UNKOWN]');
+        return expect(push('/bar.txt', '/unkown-error', opts)).rejects.toHaveProperty('message', 'Upload file "/bar.txt" to "http://localhost:1080/unkown-error" failed: "500 UNKOWN"');
     });
 });

@@ -19,22 +19,22 @@ export class Push extends LimitedConcurrent<undefined, [string, string, number?]
         return this.uploadWithRetry.bind(this);
     }
 
-    async uploadWithRetry(path: string, to: string, retry: number = this.options.retry) {
+    async uploadWithRetry(src: string, target: string, retry: number = this.options.retry) {
         debug('uploadWithRetry:', retry);
         try {
-            await upload(this.options.uploadAPI, path, to);
+            await upload(src, target, this.options.uploadAPI);
             debug('Push resolving');
             return;
         }
         catch (err) {
             if (err.errno === 100305) {
                 debug('upload error, authenticating...');
-                return auth(this.options, err).then(() => this.uploadWithRetry(path, to, retry));
+                return auth(this.options, err).then(() => this.uploadWithRetry(src, target, retry));
             }
             // 只在未知错误时重试
             if (!err.errno && retry > 0) {
                 debug('upload error, waiting to retry...');
-                return wait(100).then(() => this.uploadWithRetry(path, to, retry - 1));
+                return wait(100).then(() => this.uploadWithRetry(src, target, retry - 1));
             }
             debug('Push throwing', err);
             throw err;
