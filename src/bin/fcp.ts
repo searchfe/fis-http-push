@@ -3,7 +3,7 @@
 import {resolve} from 'path';
 import * as yargs from 'yargs';
 import {push} from '../index';
-import {parseTargetUrl} from '../util';
+import {parseTargetUrl} from '../util/target';
 
 type OptionValue = string | undefined;
 

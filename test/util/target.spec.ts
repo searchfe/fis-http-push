@@ -1,4 +1,4 @@
-import {parseTargetUrl} from '../src/util';
+import {parseTargetUrl} from '../../src/util/target';
 
 describe('util', () => {
     describe('.parseTargetUrl()', () => {

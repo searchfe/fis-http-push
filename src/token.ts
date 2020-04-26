@@ -1,6 +1,6 @@
 import fs from 'fs';
 import {homedir} from 'os';
-import {tryParseJSON} from './json';
+import {tryParseJSON} from './util/json';
 
 const HOME = homedir();
 export const FIS_TOKEN_FILE = `${HOME}/.fis3-tmp/deploy.json`;

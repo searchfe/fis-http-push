@@ -1,47 +1,31 @@
 import {tryParseJSON} from './json';
 
-export function fetch(url, data, callback) {
-    const collect: string[] = [];
-    for (const key of Object.keys(data)) {
-        collect.push(key + '=' + encodeURIComponent(data[key]));
-    }
-
-    const content = collect.join('&');
-    const opt = {
+export function postURLEncoded(url, data) {
+    const content = Object.keys(data).map(key => `${key}=${encodeURIComponent(data[key])}`).join('&');
+    const options = {
         ...optionsFromUrl(url),
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
         }
     };
-    const http = opt.protocol === 'https:' ? require('https') : require('http');
-
-    const req = http.request(opt, res => {
-        const status = res.statusCode;
-        let body = '';
-        res
-            .on('data', chunk => (body += chunk))
-            .on('end', () => {
-                if ((status < 200 || status >= 300) && status !== 304) {
-                    callback(status);
-                    return;
-                }
-                const json = tryParseJSON<IResponse>(body);
-
-                if (!json || json.errno) {
-                    callback(json || 'The response is not valid json string.');
-                }
-                else {
-                    callback(null, json);
-                }
-            })
-            .on('error', err => callback(err.message || err));
-    });
-    req.write(content);
-    req.end();
+    return request(options, [content]);
 }
 
-export function request(url, options, data) {
+export function postFormEncoded(url, boundary, data) {
+    const length = data.reduce((prev, item) => prev + Buffer.from(item).length, 0);
+    const options = {
+        ...optionsFromUrl(url),
+        method: 'POST',
+        headers: {
+            'Content-Length': length,
+            'Content-Type': 'multipart/form-data; boundary=' + boundary
+        }
+    };
+    return request(options, data);
+}
+
+export function request(options: IOptions, data: (Buffer | string)[]) {
     return new Promise((resolve, reject) => {
         const {request} = options.protocol === 'https:' ? require('https') : require('http');
         const req = request(options, responseHandler);
@@ -61,12 +45,9 @@ export function request(url, options, data) {
                 if (status < 200 || status >= 300) {
                     return reject(new Error(`${status} ${body}`));
                 }
-
-                if (body === '0') return resolve(body);
-
                 const json = tryParseJSON<{errno: number, errmsg: string}>(body);
                 if (!json) return reject(new Error(`Unkown Error: "${body}"`));
-                if (!json.errno) resolve(body);
+                if (!json.errno) resolve(json);
 
                 const msg = `${json.errno} ${json['errmsg'] || 'Unkown Error'}`;
                 const err = new Error(msg);
@@ -92,6 +73,7 @@ interface IResponse {
     errno: number;
     errmsg: string;
 }
+
 interface IOptions {
     agent?: string;
     method?: string;
