@@ -1,14 +1,23 @@
 import debugFactory from 'debug';
-import chalk from 'chalk';
-import {Push} from './push';
+import {Upload} from './upload';
 import {Options} from './options';
 import {success, error} from './util/log';
 
 const debug = debugFactory('fhp');
 
+interface Task {
+    // local file
+    path: string
+    // remote file
+    to: string
+}
+
 export async function push(path: string, to: string, options: Options) {
-    const push = new Push(options);
-    const tasks = [{path, to}];
+    return pushMultiple([{path, to}], options);
+}
+
+export async function pushMultiple(tasks: Task[], options: Options) {
+    const push = new Upload(options);
     let successCount = 0;
     let failCount = 0;
 
@@ -16,7 +25,7 @@ export async function push(path: string, to: string, options: Options) {
         ({path, to}) => push.queue(path, to)
             .then(() => {
                 successCount++;
-                success(path, chalk.yellow('>>'), to);
+                success(path, '>>', to);
             })
             .catch((err: Error) => {
                 failCount++;

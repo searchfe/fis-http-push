@@ -11,7 +11,7 @@ import {debug} from './util/log';
 const auth = singleton(authenticate);
 const endl = '\r\n';
 
-export class Push extends LimitedConcurrent<undefined, [string, string, number?]> {
+export class Upload extends LimitedConcurrent<undefined, [string, string, number?]> {
     private options: FullOptions
 
     constructor(raw: Options) {

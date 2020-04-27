@@ -18,8 +18,13 @@ FIS HTTP Push SDK, 用于 push 文件到 Fis Secure Receiver（新版的 fis htt
 demo/ 下有完整的例子。
 
 ```javascript
-const {push} = require('fis-http-push');
+const {push, pushMultiple} = require('fis-http-push');
 push('./main.js', '/var/www/main.js', {receiver: 'http://example.com:8210'})
+pushMultiple([
+  {path: './main.js', to: '/var/www/main.js'},
+  {path: './foo.js', to: '/var/www/foo.js'},
+  {path: './bar.js', to: '/var/www/bar.js'}
+], {receiver: 'http://example.com:8210'})
 ```
 
 ## 命令行接口

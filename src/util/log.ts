@@ -3,14 +3,18 @@ import debugFactory from 'debug';
 
 export const debug = debugFactory('fhp');
 
-function impl(color, ...args) {
-    const timeInfo = '[' + dateStr() + ']';
-    process.stdout.write(chalk[color](timeInfo));
-    for (const arg of args) {
-        process.stdout.write(' ');
-        process.stdout.write(arg);
-    }
-    process.stdout.write('\n');
+let impl = defaultLogImpl;
+
+export function setLogImpl(newImpl) {
+    impl = newImpl;
+}
+
+export function getLogImpl() {
+    return impl;
+}
+
+export function restoreLogImpl() {
+    impl = defaultLogImpl;
 }
 
 export function success(...args) {
@@ -30,4 +34,14 @@ function dateStr() {
     const m = now.getMonth() + 1;
     const d = now.getDate();
     return (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d) + ' ' + now.toTimeString().substr(0, 8);
+}
+
+function defaultLogImpl(color, ...args) {
+    const timeInfo = '[' + dateStr() + ']';
+    process.stdout.write(chalk[color](timeInfo));
+    for (const arg of args) {
+        process.stdout.write(' ');
+        process.stdout.write(arg);
+    }
+    process.stdout.write('\n');
 }
