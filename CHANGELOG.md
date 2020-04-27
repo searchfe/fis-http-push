@@ -1,3 +1,11 @@
+# [1.2.0](https://github.com/searchfe/fis-http-push/compare/v1.1.0...v1.2.0) (2020-04-27)
+
+
+### Features
+
+* multiple source and recursive ([1ec49a2](https://github.com/searchfe/fis-http-push/commit/1ec49a242a7bb9e30819a84dbf47c891787af0a5))
+* pushMultiple() ([a788e2b](https://github.com/searchfe/fis-http-push/commit/a788e2b8f32d5641bc530fabb49b4c74a8fb4ae3))
+
 # [1.1.0](https://github.com/searchfe/fis-http-push/compare/v1.0.1...v1.1.0) (2020-04-20)
 
 

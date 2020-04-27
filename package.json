@@ -1,6 +1,6 @@
 {
   "name": "fis-http-push",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "discription": "API for FIS http push",
   "bin": {
     "fcp": "dist/bin/fcp.js",
