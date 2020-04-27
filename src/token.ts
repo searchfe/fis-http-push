@@ -13,6 +13,7 @@ export function getToken(): IToken {
         return token;
     }
     const TOKEN_PATH = tokenPath();
+    // TODO async
     token = (fs.existsSync(TOKEN_PATH) && tryParseJSON<IToken>(fs.readFileSync(TOKEN_PATH).toString())) || {};
     return token;
 }

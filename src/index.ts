@@ -1,35 +1,86 @@
+import {stat} from 'fs';
+import {join} from 'path';
+import {promisify} from 'util';
+import assert from 'assert';
 import debugFactory from 'debug';
 import {Upload} from './upload';
 import {Options} from './options';
+import {listFilesRecursively} from './util/fs';
 import {success, error} from './util/log';
 
 const debug = debugFactory('fhp');
 
 interface Task {
-    // local file
-    path: string
-    // remote file
-    to: string
+    // 本地文件路径，基于 cwd 解析
+    source: string
+    // 远程文件路径，为绝对路径
+    dest: string
 }
 
-export async function push(path: string, to: string, options: Options) {
-    return pushMultiple([{path, to}], options);
+/**
+ * 拷贝文件。行为类似 cp、scp，和 push()、pushMultiple() 的不同在于：
+ * 1. source 可以是目录，会递归进去拷贝
+ * 2. dest 可以以 / 结尾表示放到目录下面
+ *
+ * @param sources 本地文件/目录路径列表，基于 cwd 解析
+ * @param dest 远程文件路径，为绝对路径
+ * @param options 推送参数
+ */
+export async function cp(sources: string | string[], dest: string, options: Options) {
+    debug('cp called with', sources, dest, options);
+    if (!Array.isArray(sources)) sources = [sources];
+
+    const copyInto = sources.length > 1 || dest[dest.length - 1] === '/';
+    const tasks: Task[] = [];
+    for (const source of sources) {
+        const sourceStat = await promisify(stat)(source);
+        // source: ./foo/dir or dir/ or dir, dest: /tmp/foo or /tmp/foo/
+        if (sourceStat.isDirectory()) {
+            assert(options.recursive, `-r not specified; omitting directory ${source}`);
+            for (const file of await listFilesRecursively(source.replace(/\/$/g, ''))) {
+                // file: ./foo/dir/foo.txt or dir/foo.txt
+                const destFileName = copyInto ? join(dest, file) : join(dest, file.substr(source.length + 1));
+                tasks.push({source: file, dest: destFileName});
+            }
+        }
+        else {
+            tasks.push({source, dest: copyInto ? join(dest, source) : dest});
+        }
+    }
+    return pushMultiple(tasks, options);
 }
 
+/**
+ * 推送单个文件
+ *
+ * @param source 本地文件路径，基于 cwd 解析
+ * @param dest 远程文件路径，为绝对路径
+ * @param options 推送参数
+ */
+export async function push(source: string, dest: string, options: Options) {
+    return pushMultiple([{source, dest}], options);
+}
+
+/**
+ * 推送一组文件
+ *
+ * @param tasks 一组文件推送任务
+ * @param options 推送参数
+ */
 export async function pushMultiple(tasks: Task[], options: Options) {
     const push = new Upload(options);
     let successCount = 0;
     let failCount = 0;
 
     const pending = tasks.map(
-        ({path, to}) => push.queue(path, to)
+        ({source, dest}) => push.queue(source, dest)
             .then(() => {
                 successCount++;
-                success(path, '>>', to);
+                success(source, '>>', dest);
             })
             .catch((err: Error) => {
                 failCount++;
-                err.message = `Upload file "${path}" to "${options.receiver}${to}" failed: "${err.message}"`;
+                err.message = `Upload file "${source}" to "${options.receiver}${dest}" failed: "${err.message}"`;
                 if (options.fastFail) throw err;
                 error(err.message);
             })

@@ -25,9 +25,9 @@ describe('并发上传场景', () => {
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
         await pushMultiple([
-            {path: '/foo.txt', to: '/tmp/foo.txt'},
-            {path: '/bar.txt', to: '/tmp/bar.txt'},
-            {path: '/coo.txt', to: '/tmp/coo.txt'}
+            {source: '/foo.txt', dest: '/tmp/foo.txt'},
+            {source: '/bar.txt', dest: '/tmp/bar.txt'},
+            {source: '/coo.txt', dest: '/tmp/coo.txt'}
         ], {receiver});
         expect(serverFileSystem.get('/tmp/foo.txt')).toEqual('FOO');
         expect(serverFileSystem.get('/tmp/bar.txt')).toEqual('BAR');

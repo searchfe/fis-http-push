@@ -42,6 +42,7 @@ export class Upload extends LimitedConcurrent<undefined, [string, string, number
     }
 
     async uploadFile(path, to) {
+        // TODO async
         const fileContent = fs.readFileSync(path);
         const data = {...getToken(), to};
         const boundary = '-----np' + Math.random();

@@ -26,7 +26,7 @@ function upload(uri, body) {
     const code = getField('code', body);
     const token = getField('token', body);
     const to = getField('to', body);
-    const file = getField('file', body);
+    const fileContent = getField('file', body);
 
     if (email !== EMAIL) {
         debug(`responding invalid email: "${email}" !== "${EMAIL}"`);
@@ -45,9 +45,9 @@ function upload(uri, body) {
         return [200, {'errno': 100503, 'errmsg': '未授权的文件部署路径，请加入配置白名单中'}];
     }
 
-    const size = Buffer.from(file).length;
-    debug('responding success');
-    serverFileSystem.set(to, file);
+    const size = Buffer.from(fileContent).length;
+    debug(`file "${to}" added, responding success`);
+    serverFileSystem.set(to, fileContent);
     return [200, {errno: 0, msg: `${size} bytes uploaded`}];
 }
 
