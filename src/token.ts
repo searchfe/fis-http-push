@@ -33,7 +33,6 @@ export interface IToken {
     token?: string;
 }
 
-// TODO 封装进 pushFactory 中，移除这个闭包变量
 export function clear() {
     token = null;
 }

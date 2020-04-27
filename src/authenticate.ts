@@ -30,8 +30,7 @@ const defaultReadCode = () => fromCallback<{code: string}>(cb => prompt.get({
     }
 }, cb)).then(ret => ret.code);
 
-// TODO remove prevError
-export async function authenticate(options, prevError): Promise<any> {
+export async function authenticate(options): Promise<any> {
     debug('require email called');
     const {
         authAPI,
@@ -41,10 +40,6 @@ export async function authenticate(options, prevError): Promise<any> {
     } = options;
 
     const info = getToken();
-    if (info.email) {
-        process.stdout.write('Token is invalid: ' + prevError.errmsg + '\n');
-    }
-
     const email = await readEmail(info.email);
     debug('email input:', email);
     info.email = email;

@@ -6,7 +6,7 @@ import {LimitedConcurrent} from './util/limited-concurrent';
 import {postFormEncoded} from './util/request';
 import {singleton, wait} from './util/promise';
 import {authenticate} from './authenticate';
-import {debug} from './util/log';
+import {debug, log} from './util/log';
 
 const auth = singleton(authenticate);
 const endl = '\r\n';
@@ -30,8 +30,9 @@ export class Upload extends LimitedConcurrent<undefined, [string, string, number
         }
         catch (err) {
             if (err.errno === 100305) {
-                debug('upload error, authenticating...');
-                return auth(this.options, err).then(() => this.uploadWithRetry(src, target, retry));
+                if (getToken().email) log('Token is invalid: ' + err.message + '\n');
+                else log('Authentication required');
+                return auth(this.options).then(() => this.uploadWithRetry(src, target, retry));
             }
             // 明确的错误，则直接退出。只重试未知错误。
             if (err.errno || retry <= 0) throw err;
