@@ -39,26 +39,24 @@ export async function authenticate(options): Promise<any> {
         readCode = defaultReadCode
     } = options;
 
-    const info = getToken();
+    const info = await getToken();
     const email = await readEmail(info.email);
     debug('email input:', email);
     info.email = email;
-    writeToken(info);
+    await writeToken(info);
 
     await postURLEncoded(authAPI, {email});
     log('We\'ve already sent the code to your email.');
-    await requireToken(validateAPI, info, readCode);
-}
 
-async function requireToken(validateApi, info, readCode) {
     const code = await readCode();
     debug('code input:', code);
     info.code = code;
-    writeToken(info);
-    const res = await postURLEncoded(validateApi, {
+    await writeToken(info);
+    const res = await postURLEncoded(validateAPI, {
         'code': info.code,
         'email': info.email
     });
     info.token = res['data'].token;
-    writeToken(info);
+    debug('info', info);
+    await writeToken(info);
 }

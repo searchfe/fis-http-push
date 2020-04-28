@@ -17,7 +17,7 @@ describe('各种失败场景', () => {
         mock({
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
-        return expect(push('foo.txt', '/tmp/foo.txt', opts)).rejects.toHaveProperty('message', 'Upload file "foo.txt" to "http://localhost:1080/tmp/foo.txt" failed: "ENOENT: no such file or directory, open \'foo.txt\'"');
+        return expect(push('foo.txt', '/tmp/foo.txt', opts)).rejects.toHaveProperty('message', 'Upload file "foo.txt" to "http://localhost:1080/tmp/foo.txt" failed: "ENOENT, no such file or directory \'foo.txt\'"');
     });
 
     it('远程目录不在白名单', async () => {

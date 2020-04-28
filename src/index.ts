@@ -1,11 +1,9 @@
-import {stat} from 'fs';
 import {join} from 'path';
-import {promisify} from 'util';
 import assert from 'assert';
 import debugFactory from 'debug';
 import {Upload} from './upload';
 import {Options} from './options';
-import {listFilesRecursively} from './util/fs';
+import {stat, listFilesRecursively} from './util/fs';
 import {success, error} from './util/log';
 
 const debug = debugFactory('fhp');
@@ -33,7 +31,7 @@ export async function cp(sources: string | string[], dest: string, options: Opti
     const copyInto = sources.length > 1 || dest[dest.length - 1] === '/';
     const tasks: Task[] = [];
     for (const source of sources) {
-        const sourceStat = await promisify(stat)(source);
+        const sourceStat = await stat(source);
         // source: ./foo/dir or dir/ or dir, dest: /tmp/foo or /tmp/foo/
         if (sourceStat.isDirectory()) {
             assert(options.recursive, `-r not specified; omitting directory ${source}`);

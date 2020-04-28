@@ -1,10 +1,10 @@
-import fs from 'fs';
 import debugFactory from 'debug';
 import {getToken} from './token';
 import {FullOptions, Options, normalize} from './options';
 import {LimitedConcurrent} from './util/limited-concurrent';
 import {postFormEncoded} from './util/request';
 import {singleton, wait} from './util/promise';
+import {readFile} from './util/fs';
 import {authenticate} from './authenticate';
 import {debug, log} from './util/log';
 
@@ -30,7 +30,8 @@ export class Upload extends LimitedConcurrent<undefined, [string, string, number
         }
         catch (err) {
             if (err.errno === 100305) {
-                if (getToken().email) log('Token is invalid: ' + err.message + '\n');
+                const token = await getToken();
+                if (token.email) log('Token is invalid: ' + err.message + '\n');
                 else log('Authentication required');
                 return auth(this.options).then(() => this.uploadWithRetry(src, target, retry));
             }
@@ -42,9 +43,8 @@ export class Upload extends LimitedConcurrent<undefined, [string, string, number
     }
 
     async uploadFile(path, to) {
-        // TODO async
-        const fileContent = fs.readFileSync(path);
-        const data = {...getToken(), to};
+        const fileContent = await readFile(path);
+        const data = {...await getToken(), to};
         const boundary = '-----np' + Math.random();
         const collect: (string | Buffer)[] = [];
         for (const [key, value] of Object.entries(data)) {
