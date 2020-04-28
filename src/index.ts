@@ -66,12 +66,13 @@ export async function push(source: string, dest: string, options: Options) {
  * @param options 推送参数
  */
 export async function pushMultiple(tasks: Task[], options: Options) {
-    const push = new Upload(options);
+    const upload = new Upload(options);
+
     let successCount = 0;
     let failCount = 0;
 
     const pending = tasks.map(
-        ({source, dest}) => push.queue(source, dest)
+        ({source, dest}) => upload.upload(source, dest)
             .then(() => {
                 successCount++;
                 success(source, '>>', dest);

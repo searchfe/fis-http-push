@@ -10,20 +10,33 @@ import {debug, log} from './util/log';
 
 const auth = singleton(authenticate);
 const endl = '\r\n';
+// 每个 receiver 域名一个并发限制
+const concurrentPool = new Map();
 
-export class Upload extends LimitedConcurrent<undefined, [string, string, number?]> {
+export class Upload {
     private options: FullOptions
+    private concurrent: LimitedConcurrent<never>
 
     constructor(raw: Options) {
-        super(raw.concurrentLimit);
         this.options = normalize(raw);
+        this.concurrent = this.createConcurrentInstance();
     }
 
-    getFunction() {
-        return this.uploadWithRetry.bind(this);
+    private createConcurrentInstance() {
+        const {receiver, concurrent} = this.options;
+        if (!concurrentPool.has(receiver)) {
+            concurrentPool.set(receiver, new LimitedConcurrent<never>(concurrent));
+        }
+        const instance = concurrentPool.get(receiver);
+        instance.setLimit(concurrent);
+        return instance;
     }
 
-    async uploadWithRetry(src: string, target: string, retry: number = this.options.retry) {
+    async upload(source: string, dest: string) {
+        return this.concurrent.queue(() => this.uploadFileWithRetry(source, dest));
+    }
+
+    private async uploadFileWithRetry(src: string, target: string, retry: number = this.options.retry) {
         debug('uploadWithRetry:', retry);
         try {
             return await this.uploadFile(src, target);
@@ -33,16 +46,16 @@ export class Upload extends LimitedConcurrent<undefined, [string, string, number
                 const token = await getToken();
                 if (token.email) log('Token is invalid: ' + err.message + '\n');
                 else log('Authentication required');
-                return auth(this.options).then(() => this.uploadWithRetry(src, target, retry));
+                return auth(this.options).then(() => this.uploadFileWithRetry(src, target, retry));
             }
             // 明确的错误，则直接退出。只重试未知错误。
             if (err.errno || retry <= 0) throw err;
             debug('upload error, waiting to retry...');
-            return wait(100).then(() => this.uploadWithRetry(src, target, retry - 1));
+            return wait(100).then(() => this.uploadFileWithRetry(src, target, retry - 1));
         }
     }
 
-    async uploadFile(path, to) {
+    private async uploadFile(path, to) {
         const fileContent = await readFile(path);
         const data = {...await getToken(), to};
         const boundary = '-----np' + Math.random();

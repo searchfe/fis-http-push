@@ -1,32 +1,45 @@
 import {debug} from '../util/log';
 
-export abstract class LimitedConcurrent<T, A extends any[]> {
-    private pending: [A, (val: T) => void, (err: Error) => void][] = [];
+interface Task<T> {
+    fn: () => T | Promise<T>
+    resolve: (val: T) => void
+    reject: (err: Error) => void
+}
 
-    constructor(public limit = Infinity) {}
+export class LimitedConcurrent<T> {
+    private pending: Task<T>[] = [];
+    // 可用并发数
+    private m;
 
-    abstract getFunction(): (...args: any[]) => Promise<T>;
+    constructor(private limit: number = Infinity) {
+        this.m = this.limit;
+    }
 
-    queue(...args: A) {
+    setLimit(newLimit: number) {
+        this.m += newLimit - this.limit;
+        this.limit = newLimit;
+    }
+
+    queue(fn: () => T | Promise<T>) {
         return new Promise((resolve, reject) => {
-            this.pending.push([args, resolve, reject]);
+            this.pending.push({fn, resolve, reject});
             this.signal();
         });
     }
 
     signal() {
-        if (!this.pending.length || !this.limit) return;
-        this.limit--;
-        const [args, resolve, reject] = this.pending.shift();
-        Promise.resolve().then(() => this.getFunction()(...args)).then((ret) => {
+        if (!this.pending.length || !this.m) return;
+        this.m--;
+        const {fn, resolve, reject} = this.pending.shift();
+        Promise.resolve().then(() => fn()).then((ret) => {
             debug('limited concurrent resolving');
             resolve(ret);
-            this.limit++;
+            this.m++;
             this.signal();
         }, (err) => {
             debug('limited concurrent rejecting', err);
             reject(err);
-            this.limit++;
+            this.m++;
             this.signal();
         });
     }

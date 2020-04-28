@@ -12,7 +12,7 @@ export interface Options {
     // 是否在第一个错误时退出，默认为 false
     fastFail?: boolean;
     // 并发数，默认为 100
-    concurrentLimit?: number;
+    concurrent?: number;
     // 自定义读取用户邮箱的方法
     readEmail?: (savedEmail: string) => Promise<string>;
     // 自定义读取验证码的方法
@@ -21,7 +21,7 @@ export interface Options {
 
 export interface FullOptions extends Options {
     retry: number;
-    concurrentLimit: number;
+    concurrent: number;
     uploadAPI: string;
     authAPI: string;
     validateAPI: string;
@@ -36,6 +36,6 @@ export function normalize(options: Options): FullOptions {
         authAPI: options.receiver + '/v1/authorize',
         validateAPI: options.receiver + '/v1/validate',
         retry: options.retry || 3,
-        concurrentLimit: options.concurrentLimit || 100
+        concurrent: options.concurrent || 100
     };
 }

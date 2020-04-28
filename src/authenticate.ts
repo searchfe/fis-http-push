@@ -31,7 +31,7 @@ const defaultReadCode = () => fromCallback<{code: string}>(cb => prompt.get({
 }, cb)).then(ret => ret.code);
 
 export async function authenticate(options): Promise<any> {
-    debug('require email called');
+    debug('authenticate called');
     const {
         authAPI,
         validateAPI,
@@ -57,6 +57,5 @@ export async function authenticate(options): Promise<any> {
         'email': info.email
     });
     info.token = res['data'].token;
-    debug('info', info);
     await writeToken(info);
 }
