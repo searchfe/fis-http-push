@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/searchfe/fis-http-push/compare/v1.2.0...v1.3.0) (2020-04-28)
+
+
+### Features
+
+* concurrent limit across push calls ([9b9f0fb](https://github.com/searchfe/fis-http-push/commit/9b9f0fb1dbb213146d27b71875dc827b3a2d08c0))
+
 # [1.2.0](https://github.com/searchfe/fis-http-push/compare/v1.1.0...v1.2.0) (2020-04-27)
 
 
