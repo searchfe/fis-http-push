@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/searchfe/fis-http-push/compare/v1.3.0...v1.3.1) (2020-04-30)
+
+
+### Bug Fixes
+
+* 排队验证失败时错误消息会叠加 ([a2c2c97](https://github.com/searchfe/fis-http-push/commit/a2c2c9707f46bec2122fc5492bdb0717ca5ba6bd))
+
 # [1.3.0](https://github.com/searchfe/fis-http-push/compare/v1.2.0...v1.3.0) (2020-04-28)
 
 
