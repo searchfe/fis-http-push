@@ -1,5 +1,5 @@
 import mock from 'mock-fs';
-import {push, pushMultiple} from '../src';
+import {push, pushFile} from '../src';
 import {clear, FHP_TOKEN_FILE} from '../src/token';
 import {getLogImpl, setLogImpl, restoreLogImpl} from '../src/util/log';
 import {startServer, receiver} from './stub/server';
@@ -20,7 +20,7 @@ describe('日志参数', () => {
 
     it('上传单个文件', async () => {
         mock({'/foo.txt': 'FOO', [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT});
-        await push('/foo.txt', '/tmp/foo.txt', {receiver});
+        await pushFile('/foo.txt', '/tmp/foo.txt', {receiver});
         expect(getLogImpl()['calls']).toHaveLength(2);
         expect(getLogImpl()['calls'][0]).toMatchObject({
             color: 'green',
@@ -39,7 +39,7 @@ describe('日志参数', () => {
             '/coo.txt': 'COO',
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
-        await pushMultiple([
+        await push([
             {source: '/foo.txt', dest: '/tmp/foo.txt'},
             {source: '/bar.txt', dest: '/tmp/bar.txt'},
             {source: '/coo.txt', dest: '/tmp/coo.txt'}

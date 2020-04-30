@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import {resolve, basename} from 'path';
-import {cp} from '../index';
+import {fcp} from '../index';
 import {error} from '../util/log';
 
 main();
@@ -35,7 +35,7 @@ function main() {
 
     const recursive = argMap['--recursive'] || argMap['-r'];
     const url = new URL(target);
-    cp(files, url.pathname, {receiver: url.origin, recursive});
+    fcp(files, url.pathname, {receiver: url.origin, recursive});
 }
 
 function helpMessage(name: string) {

@@ -1,5 +1,5 @@
 import mock from 'mock-fs';
-import {push, pushMultiple} from '../src';
+import {push, pushFile} from '../src';
 import {clear, FHP_TOKEN_FILE} from '../src/token';
 import {startServer, receiver, serverFileSystem} from './stub/server';
 import {TOKEN_FILE_CONTENT, EMAIL, CODE} from './stub/token';
@@ -19,7 +19,7 @@ describe('邮件验证功能', () => {
         mock({
             '/foo.txt': 'FOO'
         });
-        await push('/foo.txt', '/tmp/foo.txt', {receiver, readEmail, readCode});
+        await pushFile('/foo.txt', '/tmp/foo.txt', {receiver, readEmail, readCode});
         expect(readEmail).toBeCalledTimes(1);
         expect(readCode).toBeCalledTimes(1);
     });
@@ -29,7 +29,7 @@ describe('邮件验证功能', () => {
             '/foo.txt': 'FOO',
             '~/.fis3-tmp/deploy.json': '{}'
         });
-        await push('/foo.txt', '/tmp/foo.txt', {receiver, readEmail, readCode});
+        await pushFile('/foo.txt', '/tmp/foo.txt', {receiver, readEmail, readCode});
         expect(readEmail).toBeCalledTimes(1);
         expect(readCode).toBeCalledTimes(1);
     });
@@ -43,7 +43,7 @@ describe('邮件验证功能', () => {
                 token: 'MOCK_TOKEN_EXPIRED'
             })
         });
-        await push('/foo.txt', '/tmp/foo.txt', {receiver, readEmail, readCode});
+        await pushFile('/foo.txt', '/tmp/foo.txt', {receiver, readEmail, readCode});
         expect(readEmail).toBeCalledTimes(1);
         expect(readCode).toBeCalledTimes(1);
     });
@@ -53,7 +53,7 @@ describe('邮件验证功能', () => {
             '/foo.txt': 'FOO',
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
-        await push('/foo.txt', '/tmp/foo.txt', {receiver, readEmail, readCode});
+        await pushFile('/foo.txt', '/tmp/foo.txt', {receiver, readEmail, readCode});
         expect(readEmail).toBeCalledTimes(0);
         expect(readCode).toBeCalledTimes(0);
     });
@@ -63,7 +63,7 @@ describe('邮件验证功能', () => {
             '/foo.txt': 'FOO',
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
-        await push('/foo.txt', '/tmp/foo.txt', {receiver, readEmail, readCode});
+        await pushFile('/foo.txt', '/tmp/foo.txt', {receiver, readEmail, readCode});
         expect(readEmail).toBeCalledTimes(0);
         expect(readCode).toBeCalledTimes(0);
     });
@@ -77,7 +77,7 @@ describe('邮件验证功能', () => {
             {source: '/foo.txt', dest: '/tmp/foo'},
             {source: '/bar.txt', dest: '/tmp/bar'}
         ];
-        await pushMultiple(tasks, {receiver, readEmail, readCode});
+        await push(tasks, {receiver, readEmail, readCode});
         expect(readEmail).toBeCalledTimes(1);
         expect(readCode).toBeCalledTimes(1);
         expect(serverFileSystem.get('/tmp/foo')).toEqual('FOO');

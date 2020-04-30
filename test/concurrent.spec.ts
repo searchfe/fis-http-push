@@ -1,5 +1,5 @@
 import mock from 'mock-fs';
-import {push, pushMultiple} from '../src';
+import {pushFile, push} from '../src';
 import {clear, FHP_TOKEN_FILE} from '../src/token';
 import {startServer, maxConcurrent, receiver, serverFileSystem} from './stub/server';
 import {TOKEN_FILE_CONTENT} from './stub/token';
@@ -11,20 +11,20 @@ describe('并发上传场景', () => {
     });
     afterEach(() => mock.restore());
 
-    it('push 上传单个文件', async () => {
+    it('pushFile 上传单个文件', async () => {
         mock({'/foo.txt': 'FOO', [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT});
-        await push('/foo.txt', '/tmp/foo.txt', {receiver});
+        await pushFile('/foo.txt', '/tmp/foo.txt', {receiver});
         expect(serverFileSystem.get('/tmp/foo.txt')).toEqual('FOO');
     });
 
-    it('pushMultiple 并发 3 个文件', async () => {
+    it('cp 并发 3 个文件', async () => {
         mock({
             '/foo.txt': 'FOO',
             '/bar.txt': 'BAR',
             '/coo.txt': 'COO',
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
-        await pushMultiple([
+        await push([
             {source: '/foo.txt', dest: '/tmp/foo.txt'},
             {source: '/bar.txt', dest: '/tmp/bar.txt'},
             {source: '/coo.txt', dest: '/tmp/coo.txt'}
@@ -34,7 +34,7 @@ describe('并发上传场景', () => {
         expect(serverFileSystem.get('/tmp/coo.txt')).toEqual('COO');
     });
 
-    it('并发 3 个 push', async () => {
+    it('并发 3 个 pushFile', async () => {
         mock({
             '/foo.txt': 'FOO',
             '/bar.txt': 'BAR',
@@ -42,9 +42,9 @@ describe('并发上传场景', () => {
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
         await Promise.all([
-            push('/foo.txt', '/tmp/foo.txt', {receiver}),
-            push('/bar.txt', '/tmp/bar.txt', {receiver}),
-            push('/coo.txt', '/tmp/coo.txt', {receiver})
+            pushFile('/foo.txt', '/tmp/foo.txt', {receiver}),
+            pushFile('/bar.txt', '/tmp/bar.txt', {receiver}),
+            pushFile('/coo.txt', '/tmp/coo.txt', {receiver})
         ]);
         expect(serverFileSystem.get('/tmp/foo.txt')).toEqual('FOO');
         expect(serverFileSystem.get('/tmp/bar.txt')).toEqual('BAR');
@@ -60,9 +60,9 @@ describe('并发上传场景', () => {
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
         await Promise.all([
-            push('/foo.txt', '/tmp/foo.txt', {receiver, concurrent: 2}),
-            push('/bar.txt', '/tmp/bar.txt', {receiver, concurrent: 2}),
-            push('/coo.txt', '/tmp/coo.txt', {receiver, concurrent: 2})
+            pushFile('/foo.txt', '/tmp/foo.txt', {receiver, concurrent: 2}),
+            pushFile('/bar.txt', '/tmp/bar.txt', {receiver, concurrent: 2}),
+            pushFile('/coo.txt', '/tmp/coo.txt', {receiver, concurrent: 2})
         ]);
         expect(serverFileSystem.get('/tmp/foo.txt')).toEqual('FOO');
         expect(serverFileSystem.get('/tmp/bar.txt')).toEqual('BAR');

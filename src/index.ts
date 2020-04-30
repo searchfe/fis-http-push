@@ -16,7 +16,7 @@ interface Task {
 }
 
 /**
- * 拷贝文件。行为类似 cp、scp，和 push()、pushMultiple() 的不同在于：
+ * 拷贝文件。行为类似 fcp、scp，和 push()、pushMultiple() 的不同在于：
  * 1. source 可以是目录，会递归进去拷贝
  * 2. dest 可以以 / 结尾表示放到目录下面
  *
@@ -24,8 +24,8 @@ interface Task {
  * @param dest 远程文件路径，为绝对路径
  * @param options 推送参数
  */
-export async function cp(sources: string | string[], dest: string, options: Options) {
-    debug('cp called with', sources, dest, options);
+export async function fcp(sources: string | string[], dest: string, options: Options) {
+    debug('fcp called with', sources, dest, options);
     if (!Array.isArray(sources)) sources = [sources];
 
     const copyInto = sources.length > 1 || dest[dest.length - 1] === '/';
@@ -45,18 +45,7 @@ export async function cp(sources: string | string[], dest: string, options: Opti
             tasks.push({source, dest: copyInto ? join(dest, source) : dest});
         }
     }
-    return pushMultiple(tasks, options);
-}
-
-/**
- * 推送单个文件
- *
- * @param source 本地文件路径，基于 cwd 解析
- * @param dest 远程文件路径，为绝对路径
- * @param options 推送参数
- */
-export async function push(source: string, dest: string, options: Options) {
-    return pushMultiple([{source, dest}], options);
+    return push(tasks, options);
 }
 
 /**
@@ -65,7 +54,7 @@ export async function push(source: string, dest: string, options: Options) {
  * @param tasks 一组文件推送任务
  * @param options 推送参数
  */
-export async function pushMultiple(tasks: Task[], options: Options) {
+export async function push(tasks: Task[], options: Options) {
     const upload = new Upload(options);
 
     let successCount = 0;
@@ -94,6 +83,18 @@ export async function pushMultiple(tasks: Task[], options: Options) {
     });
     success(`total ${pending.length}, success ${successCount}, fail ${failCount}`);
 }
+
+/**
+ * 推送单个文件
+ *
+ * @param source 本地文件路径，基于 cwd 解析
+ * @param dest 远程文件路径，为绝对路径
+ * @param options 推送参数
+ */
+export async function pushFile(source: string, dest: string, options: Options) {
+    return push([{source, dest}], options);
+}
+
 
 function failMessage(err: Error, source: string, dest: string, options: Options) {
     return `Upload file "${source}" to "${options.receiver}${dest}" failed: "${err.message}"`;
