@@ -73,9 +73,6 @@
       "@semantic-release/git"
     ]
   },
-  "peerDependencies": {
-    "makit": "^1.15.0"
-  },
   "engines": {
     "node": ">= 6.0.x"
   },
@@ -107,7 +104,6 @@
   "dependencies": {
     "chalk": "^3.0.0",
     "debug": "^4.1.1",
-    "prompt": "^1.0.0",
-    "yargs": "^15.3.1"
+    "prompt": "^1.0.0"
   }
 }
