@@ -1,7 +1,7 @@
 # fis-http-push
 [![npm version](https://img.shields.io/npm/v/fis-http-push.svg)](https://www.npmjs.org/package/fis-http-push)
 [![downloads](https://img.shields.io/npm/dm/fis-http-push.svg)](https://www.npmjs.org/package/fis-http-push)
-[![Build Status](https://travis-ci.org/searchfe/fis-http-push.svg?branch=master)](https://travis-ci.org/searchfe/fis-http-push)
+[![Build Status](https://travis-ci.com/searchfe/fis-http-push.svg?branch=master)](https://travis-ci.com/searchfe/fis-http-push)
 [![Coveralls](https://img.shields.io/coveralls/searchfe/fis-http-push.svg)](https://coveralls.io/github/searchfe/fis-http-push?branch=master)
 [![dependencies](https://img.shields.io/david/searchfe/fis-http-push.svg)](https://david-dm.org/searchfe/fis-http-push)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/searchfe/fis-http-push)
