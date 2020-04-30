@@ -15,30 +15,41 @@ FIS HTTP Push SDK, 用于 push 文件到 Fis Secure Receiver（新版的 fis htt
 
 ## 编程接口
 
-demo/ 下有完整的例子。
+demo/ 下有完整的例子，主要包括 `push`, `pushMultiple`, `cp` 三个接口，都返回 `Promise<void>`。
 
 ```javascript
 const {push, pushMultiple} = require('fis-http-push');
+// 单个文件 push
 push('./main.js', '/var/www/main.js', {receiver: 'http://example.com:8210'})
+// 多个文件 push
 pushMultiple([
   {path: './main.js', to: '/var/www/main.js'},
   {path: './foo.js', to: '/var/www/foo.js'},
   {path: './bar.js', to: '/var/www/bar.js'}
 ], {receiver: 'http://example.com:8210'})
+// 拷贝，支持目录类似 GNU 的 scp
+cp('./src/', '/var/www/', {receiver: 'http://example.com:8210', recursive: true})
 ```
 
 ## 命令行接口
 
 ```bash
 npm i -g fis-http-push
+# 上传一个文件
 fcp ./main.js http://example.com:8210/var/www/main.js
+# 上传一个目录
+fcp -r ./src/ http://example.com:8210/var/www/
+# 上传多个文件、目录
+fcp -r ./src/ main.js dist/ http://example.com:8210/var/www/
 ```
 
 ## Makit 中使用
 
 ```javascript
 const {push} = require('fis-http-push');
-rule('http://example.com:8210/foo.txt', 'foo.txt', push)
+rule('deploy:/tmp/foo.txt', 'foo.txt', ctx => push('foo.txt', '/tmp/foo.txt', {receiver: 'http://example.com:8210'}))
+// 使用方式：
+// makit deploy:/tmp/foo.txt
 ```
 
 ## 开发指南

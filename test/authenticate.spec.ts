@@ -1,7 +1,7 @@
 import mock from 'mock-fs';
-import {push} from '../src';
+import {push, pushMultiple} from '../src';
 import {clear, FHP_TOKEN_FILE} from '../src/token';
-import {startServer, receiver} from './stub/server';
+import {startServer, receiver, serverFileSystem} from './stub/server';
 import {TOKEN_FILE_CONTENT, EMAIL, CODE} from './stub/token';
 
 describe('邮件验证功能', () => {
@@ -66,5 +66,21 @@ describe('邮件验证功能', () => {
         await push('/foo.txt', '/tmp/foo.txt', {receiver, readEmail, readCode});
         expect(readEmail).toBeCalledTimes(0);
         expect(readCode).toBeCalledTimes(0);
+    });
+
+    it('并发时只验证一次 Token', async () => {
+        mock({
+            '/foo.txt': 'FOO',
+            '/bar.txt': 'BAR'
+        });
+        const tasks = [
+            {source: '/foo.txt', dest: '/tmp/foo'},
+            {source: '/bar.txt', dest: '/tmp/bar'}
+        ];
+        await pushMultiple(tasks, {receiver, readEmail, readCode});
+        expect(readEmail).toBeCalledTimes(1);
+        expect(readCode).toBeCalledTimes(1);
+        expect(serverFileSystem.get('/tmp/foo')).toEqual('FOO');
+        expect(serverFileSystem.get('/tmp/bar')).toEqual('BAR');
     });
 });

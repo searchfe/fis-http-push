@@ -79,12 +79,22 @@ export async function pushMultiple(tasks: Task[], options: Options) {
             })
             .catch((err: Error) => {
                 failCount++;
-                err.message = `Upload file "${source}" to "${options.receiver}${dest}" failed: "${err.message}"`;
+                err['task'] = {source, dest};
                 if (options.fastFail) throw err;
-                error(err.message);
+                error(failMessage(err, source, dest, options));
             })
     );
 
-    await Promise.all(pending);
+    await Promise.all(pending).catch(err => {
+        if (err['task']) {
+            const {source, dest} = err['task'];
+            err.message = failMessage(err, source, dest, options);
+        }
+        throw err;
+    });
     success(`total ${pending.length}, success ${successCount}, fail ${failCount}`);
+}
+
+function failMessage(err: Error, source: string, dest: string, options: Options) {
+    return `Upload file "${source}" to "${options.receiver}${dest}" failed: "${err.message}"`;
 }

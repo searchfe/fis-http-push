@@ -6,7 +6,7 @@ import {postFormEncoded} from './util/request';
 import {singleton, wait} from './util/promise';
 import {readFile} from './util/fs';
 import {authenticate} from './authenticate';
-import {debug, log} from './util/log';
+import {debug} from './util/log';
 
 const auth = singleton(authenticate);
 const endl = '\r\n';
@@ -44,8 +44,8 @@ export class Upload {
         catch (err) {
             if (err.errno === 100305) {
                 const token = await getToken();
-                if (token.email) log('Token is invalid: ' + err.message + '\n');
-                else log('Authentication required');
+                if (token.email) debug('Token is invalid: ' + err.message + '\n');
+                else debug('Authentication required');
                 return auth(this.options).then(() => this.uploadFileWithRetry(src, target, retry));
             }
             // 明确的错误，则直接退出。只重试未知错误。
