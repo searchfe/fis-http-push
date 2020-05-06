@@ -1,9 +1,10 @@
 module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  testMatch: [
-    '<rootDir>/test/**/?(*.)(spec|test).ts?(x)'
-  ]
-  // testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
-  // moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+    preset: 'ts-jest',
+    testEnvironment: 'node',
+    coveragePathIgnorePatterns: ['test'],
+    testMatch: [
+        '<rootDir>/test/**/?(*.)(spec|test).ts?(x)'
+    ]
+    // testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
+    // moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 };

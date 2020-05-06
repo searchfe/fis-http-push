@@ -12,7 +12,7 @@
     "lint": "eslint src/**/*.ts",
     "docs": "typedoc --out docs src && touch docs/.nojekyll",
     "test": "jest",
-    "cover": "jest --coverage",
+    "coverage": "jest --coverage",
     "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "build": "tsc",
     "watch": "tsc --watch",

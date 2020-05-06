@@ -29,6 +29,10 @@ export function log(...args) {
     impl(0, 'dim', ...args);
 }
 
+export function raw(...args) {
+    impl(0, 'raw', ...args);
+}
+
 function dateStr() {
     const now = new Date();
     const m = now.getMonth() + 1;
@@ -41,7 +45,9 @@ function dateStr() {
  */
 function defaultLogImpl(out: 0 | 1, color: string, ...args) {
     const timeInfo = '[' + dateStr() + ']';
-    process[out ? 'stderr' : 'stdout'].write(chalk[color](timeInfo));
+    process[out ? 'stderr' : 'stdout'].write(
+        color === 'raw' ? timeInfo : chalk[color](timeInfo)
+    );
     for (const arg of args) {
         process.stdout.write(' ');
         process.stdout.write(arg);
