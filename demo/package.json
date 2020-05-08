@@ -1,0 +1,15 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "privete": true,
+  "description": "This is a demo for using fis-http-push with [makit](https://github.com/searchfe/makit).",
+  "scripts": {
+    "start": "makit deploy"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "fis-http-push": "../",
+    "makit": "^1.15.4"
+  }
+}

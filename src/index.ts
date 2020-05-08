@@ -1,6 +1,7 @@
 import {join} from 'path';
 import assert from 'assert';
 import debugFactory from 'debug';
+import {Context} from 'makit';
 import {Upload} from './upload';
 import {Options} from './options';
 import {stat, listFilesRecursively} from './util/fs';
@@ -95,6 +96,15 @@ export async function pushFile(source: string, dest: string, options: Options) {
     return push([{source, dest}], options);
 }
 
+export function makit(options: Partial<Options> = {}) {
+    return function (ctx: Context) {
+        const url = new URL(ctx.target);
+        return pushFile(ctx.dependencyFullPath(), url.pathname, {
+            receiver: url.origin,
+            ...options
+        });
+    };
+}
 
 function failMessage(err: Error, source: string, dest: string, options: Options) {
     return `Upload file "${source}" to "${options.receiver}${dest}" failed: "${err.message}"`;

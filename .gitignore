@@ -17,3 +17,5 @@ node_modules/
 test-reports/
 coverage/
 .nyc_output
+
+demo/.makit.db
