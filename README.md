@@ -80,11 +80,14 @@ Examples:
 ## Makit 中使用
 
 ```javascript
-const {push} = require('fis-http-push');
-rule('deploy:/tmp/foo.txt', 'foo.txt', ctx => push('foo.txt', '/tmp/foo.txt', {receiver: 'http://example.com:8210'}))
+const {makit} = require('fis-http-push');
+rule('http://example.com:8210/tmp/foo.txt', 'foo.txt', makit())
+
 // 使用方式：
-// makit deploy:/tmp/foo.txt
+// makit http://example.com:8210/tmp/foo.txt
 ```
+
+[demo](https://github.com/searchfe/fis-http-push/tree/master/demo) 目录包含了一个在 makit 中使用 fis-http-push 的例子。
 
 ## 多个 SOURCE
 
