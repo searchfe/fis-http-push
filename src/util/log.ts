@@ -42,41 +42,40 @@ export function restoreLogImpl() {
  * Log Interfaces
  */
 export function error(...args) {
-    impl(OutStream.STDERR, LogLevel.ERROR, 'red', ...args);
+    return impl(OutStream.STDERR, LogLevel.ERROR, 'red', ...args);
 }
 export function warn(...args) {
-    impl(OutStream.STDERR, LogLevel.WARN, 'yellow', ...args);
+    return impl(OutStream.STDERR, LogLevel.WARN, 'yellow', ...args);
 }
 export function success(...args) {
-    impl(OutStream.STDOUT, LogLevel.INFO, 'green', ...args);
+    return impl(OutStream.STDOUT, LogLevel.INFO, 'green', ...args);
 }
 export function log(...args) {
-    impl(OutStream.STDOUT, LogLevel.INFO, 'dim', ...args);
+    return impl(OutStream.STDOUT, LogLevel.INFO, 'dim', ...args);
 }
 export function raw(...args) {
-    impl(OutStream.STDOUT, LogLevel.INFO, 'raw', ...args);
+    return impl(OutStream.STDOUT, LogLevel.INFO, 'raw', ...args);
 }
 export function debug(...args) {
-    impl(OutStream.STDERR, LogLevel.DEBUG, 'raw', ...args);
+    return impl(OutStream.STDERR, LogLevel.DEBUG, 'raw', ...args);
 }
 
-function dateStr() {
-    const now = new Date();
+export function dateStr(now = new Date()) {
     const m = now.getMonth() + 1;
     const d = now.getDate();
     return (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d) + ' ' + now.toTimeString().substr(0, 8);
 }
 
-function defaultLogImpl(out: OutStream, level: LogLevel, color: string, ...args) {
+export function defaultLogImpl(out: OutStream, level: LogLevel, color: string, ...args) {
     if (level < logLevel) return;
 
-    const timeInfo = '[' + dateStr() + ']';
-    process[out].write(
-        color === 'raw' ? timeInfo : chalk[color](timeInfo)
-    );
+    let timeInfo = '[' + dateStr() + ']';
+    let str = color === 'raw' ? timeInfo : chalk[color](timeInfo);
     for (const arg of args) {
-        process.stdout.write(' ');
-        process.stdout.write(inspect(arg));
+        str += ' ';
+        str += inspect(arg);
     }
-    process.stdout.write('\n');
+    str += '\n';
+    process[out].write(str);
+    return str;
 }
