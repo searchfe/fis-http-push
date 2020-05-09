@@ -232,7 +232,6 @@
       "import/no-absolute-path": "error",
       "import/no-amd": "warn",
       "import/no-deprecated": "error",
-      "import/no-dynamic-require": "warn",
       "import/no-extraneous-dependencies": "off",
       "import/no-internal-modules": "off",
       "import/no-mutable-exports": "off",

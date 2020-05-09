@@ -5,6 +5,8 @@ import {startServer, maxConcurrent, receiver, serverFileSystem} from './stub/ser
 import {TOKEN_FILE_CONTENT} from './stub/token';
 
 describe('并发上传场景', () => {
+    const logLevel = 6;
+
     beforeEach(() => {
         clear();
         startServer();
@@ -13,7 +15,7 @@ describe('并发上传场景', () => {
 
     it('pushFile 上传单个文件', async () => {
         mock({'/foo.txt': 'FOO', [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT});
-        await pushFile('/foo.txt', '/tmp/foo.txt', {receiver});
+        await pushFile('/foo.txt', '/tmp/foo.txt', {receiver, logLevel});
         expect(serverFileSystem.get('/tmp/foo.txt')).toEqual('FOO');
     });
 
@@ -28,7 +30,7 @@ describe('并发上传场景', () => {
             {source: '/foo.txt', dest: '/tmp/foo.txt'},
             {source: '/bar.txt', dest: '/tmp/bar.txt'},
             {source: '/coo.txt', dest: '/tmp/coo.txt'}
-        ], {receiver});
+        ], {receiver, logLevel: 6});
         expect(serverFileSystem.get('/tmp/foo.txt')).toEqual('FOO');
         expect(serverFileSystem.get('/tmp/bar.txt')).toEqual('BAR');
         expect(serverFileSystem.get('/tmp/coo.txt')).toEqual('COO');
@@ -42,9 +44,9 @@ describe('并发上传场景', () => {
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
         await Promise.all([
-            pushFile('/foo.txt', '/tmp/foo.txt', {receiver}),
-            pushFile('/bar.txt', '/tmp/bar.txt', {receiver}),
-            pushFile('/coo.txt', '/tmp/coo.txt', {receiver})
+            pushFile('/foo.txt', '/tmp/foo.txt', {receiver, logLevel}),
+            pushFile('/bar.txt', '/tmp/bar.txt', {receiver, logLevel}),
+            pushFile('/coo.txt', '/tmp/coo.txt', {receiver, logLevel})
         ]);
         expect(serverFileSystem.get('/tmp/foo.txt')).toEqual('FOO');
         expect(serverFileSystem.get('/tmp/bar.txt')).toEqual('BAR');
@@ -60,9 +62,9 @@ describe('并发上传场景', () => {
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
         await Promise.all([
-            pushFile('/foo.txt', '/tmp/foo.txt', {receiver, concurrent: 2}),
-            pushFile('/bar.txt', '/tmp/bar.txt', {receiver, concurrent: 2}),
-            pushFile('/coo.txt', '/tmp/coo.txt', {receiver, concurrent: 2})
+            pushFile('/foo.txt', '/tmp/foo.txt', {receiver, concurrent: 2, logLevel}),
+            pushFile('/bar.txt', '/tmp/bar.txt', {receiver, concurrent: 2, logLevel}),
+            pushFile('/coo.txt', '/tmp/coo.txt', {receiver, concurrent: 2, logLevel})
         ]);
         expect(serverFileSystem.get('/tmp/foo.txt')).toEqual('FOO');
         expect(serverFileSystem.get('/tmp/bar.txt')).toEqual('BAR');

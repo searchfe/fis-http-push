@@ -5,6 +5,7 @@ import {startServer, receiver, serverFileSystem} from './stub/server';
 import {TOKEN_FILE_CONTENT} from './stub/token';
 
 describe('fcp', () => {
+    const logLevel = 6;
     beforeEach(() => {
         clear();
         startServer();
@@ -13,7 +14,7 @@ describe('fcp', () => {
 
     it('文件到文件', async () => {
         mock({'/foo.txt': 'FOO', [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT});
-        await fcp('/foo.txt', '/tmp/foo.txt', {receiver});
+        await fcp('/foo.txt', '/tmp/foo.txt', {receiver, logLevel});
         expect(serverFileSystem.get('/tmp/foo.txt')).toEqual('FOO');
     });
 
@@ -26,7 +27,7 @@ describe('fcp', () => {
             },
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
-        await fcp('foo', '/tmp/foo', {receiver, recursive: true});
+        await fcp('foo', '/tmp/foo', {receiver, recursive: true, logLevel});
         expect(serverFileSystem.get('/tmp/foo/foo.txt')).toEqual('FOO');
         expect(serverFileSystem.get('/tmp/foo/bar.txt')).toEqual('BAR');
         expect(serverFileSystem.get('/tmp/foo/coo.txt')).toEqual('COO');
@@ -41,7 +42,7 @@ describe('fcp', () => {
             },
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
-        await fcp('foo', '/tmp/bar/', {receiver, recursive: true});
+        await fcp('foo', '/tmp/bar/', {receiver, recursive: true, logLevel});
         expect(serverFileSystem.get('/tmp/bar/foo/foo.txt')).toEqual('FOO');
         expect(serverFileSystem.get('/tmp/bar/foo/bar.txt')).toEqual('BAR');
         expect(serverFileSystem.get('/tmp/bar/foo/coo.txt')).toEqual('COO');
@@ -56,7 +57,7 @@ describe('fcp', () => {
             },
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
-        await fcp(['foo.txt', 'foo'], '/tmp/bar', {receiver, recursive: true});
+        await fcp(['foo.txt', 'foo'], '/tmp/bar', {receiver, recursive: true, logLevel});
         expect(serverFileSystem.get('/tmp/bar/foo.txt')).toEqual('FOO');
         expect(serverFileSystem.get('/tmp/bar/foo/bar.txt')).toEqual('BAR');
         expect(serverFileSystem.get('/tmp/bar/foo/coo.txt')).toEqual('COO');
@@ -71,7 +72,7 @@ describe('fcp', () => {
             },
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
-        await fcp(['foo.txt', 'foo'], '/tmp/bar/', {receiver, recursive: true});
+        await fcp(['foo.txt', 'foo'], '/tmp/bar/', {receiver, recursive: true, logLevel});
         expect(serverFileSystem.get('/tmp/bar/foo.txt')).toEqual('FOO');
         expect(serverFileSystem.get('/tmp/bar/foo/bar.txt')).toEqual('BAR');
         expect(serverFileSystem.get('/tmp/bar/foo/coo.txt')).toEqual('COO');
@@ -86,7 +87,7 @@ describe('fcp', () => {
             },
             [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT
         });
-        await fcp(['./foo.txt', 'foo/bar.txt', './foo/coo.txt'], '/tmp/bar', {receiver, recursive: true});
+        await fcp(['./foo.txt', 'foo/bar.txt', './foo/coo.txt'], '/tmp/bar', {receiver, recursive: true, logLevel});
         expect(serverFileSystem.get('/tmp/bar/foo.txt')).toEqual('FOO');
         expect(serverFileSystem.get('/tmp/bar/foo/bar.txt')).toEqual('BAR');
         expect(serverFileSystem.get('/tmp/bar/foo/coo.txt')).toEqual('COO');

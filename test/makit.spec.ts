@@ -5,6 +5,7 @@ import {startServer, receiver, serverFileSystem} from './stub/server';
 import {TOKEN_FILE_CONTENT} from './stub/token';
 
 describe('makit 插件', () => {
+    const logLevel = 6;
     beforeEach(() => {
         clear();
         startServer();
@@ -15,7 +16,7 @@ describe('makit 插件', () => {
 
     it('上传单个文件', async () => {
         mock({'/foo.txt': 'FOO', [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT});
-        await makit()({
+        await makit({logLevel})({
             dependencyFullPath: () => '/foo.txt',
             target: `${receiver}/tmp/foo.txt`
         } as any);

@@ -1,6 +1,6 @@
 import {resolve, basename} from 'path';
 import {fcp} from '../index';
-import {raw} from '../util/log';
+import {LogLevel, raw} from '../util/log';
 
 export async function main(argv: string[]) {
     const [, bin, ...args] = argv;
@@ -14,21 +14,23 @@ export async function main(argv: string[]) {
     }
 
     const help = argMap['--help'] || argMap['-h'];
-    // eslint-disable-next-line
-    if (help) return raw(helpMessage(name));
-
     const version = argMap['--version'] || argMap['-v'];
-    // eslint-disable-next-line
-    if (version) return raw(require(resolve(__dirname, '../../package.json')).version);
+    const recursive = argMap['--recursive'] || argMap['-r'];
+    const debug = argMap['--debug'] || argMap['-d'];
+    const quiet = argMap['--quiet'] || argMap['-q'];
 
+    if (help) return raw(helpMessage(name));
+    if (version) return raw(require(resolve(__dirname, '../../package.json')).version);
     if (files.length < 2) {
         throw new Error(`${name} missing file operand\n\n${helpMessage(name)}\n`);
     }
     const target = files.pop();
 
-    const recursive = argMap['--recursive'] || argMap['-r'];
     const url = new URL(target);
-    return fcp(files, url.pathname, {receiver: url.origin, recursive});
+    let logLevel = LogLevel.INFO;
+    if (debug) logLevel = LogLevel.DEBUG;
+    if (quiet) logLevel = LogLevel.NONE;
+    return fcp(files, url.pathname, {receiver: url.origin, recursive, logLevel});
 }
 
 export function helpMessage(name: string) {
@@ -42,6 +44,8 @@ Options:
   --version        Show version number          [boolean]
   --help           Show usage instructions.     [boolean]
   --recursive, -r  push directories recursively [boolean]
+  --quiet, -q      print nothing                [boolean]
+  --debug, -d      print debug message          [boolean]
 
 Examples:
   fcp ./a.txt http://example.com:8210/tmp/a.txt  a.txt -> /tmp/a.txt

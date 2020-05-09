@@ -5,7 +5,7 @@ import {Context} from 'makit';
 import {Upload} from './upload';
 import {Options} from './options';
 import {stat, listFilesRecursively} from './util/fs';
-import {success, error} from './util/log';
+import {setLogLevel, success, error} from './util/log';
 
 const debug = debugFactory('fhp');
 
@@ -26,6 +26,7 @@ interface Task {
  * @param options 推送参数
  */
 export async function fcp(sources: string | string[], dest: string, options: Options) {
+    setLogLevel(options.logLevel);
     debug('fcp called with', sources, dest, options);
     if (!Array.isArray(sources)) sources = [sources];
 
@@ -56,6 +57,7 @@ export async function fcp(sources: string | string[], dest: string, options: Opt
  * @param options 推送参数
  */
 export async function push(tasks: Task[], options: Options) {
+    setLogLevel(options.logLevel);
     const upload = new Upload(options);
 
     let successCount = 0;
