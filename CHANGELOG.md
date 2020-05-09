@@ -1,3 +1,11 @@
+# [1.4.0](https://github.com/searchfe/fis-http-push/compare/v1.3.1...v1.4.0) (2020-05-09)
+
+
+### Features
+
+* logLevel, debug, quiet mode ([6ddbea9](https://github.com/searchfe/fis-http-push/commit/6ddbea982bbb39b6f8192d23963a75db8e3d4232))
+* makit plugin, closes [#4](https://github.com/searchfe/fis-http-push/issues/4) ([a41c061](https://github.com/searchfe/fis-http-push/commit/a41c061926590baec42ad8d47c5eb0b06e220d1a))
+
 ## [1.3.1](https://github.com/searchfe/fis-http-push/compare/v1.3.0...v1.3.1) (2020-04-30)
 
 
