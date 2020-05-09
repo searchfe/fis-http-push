@@ -9,7 +9,7 @@ describe('Promise', () => {
         it('从 callback 的错误 reject', async () => {
             return expect(
                 fromCallback(cb => cb(new Error('FOO')))
-            ).rejects.toMatchObject({message: 'FOO'})
+            ).rejects.toMatchObject({message: 'FOO'});
         });
     });
     describe('.singleton()', () => {
