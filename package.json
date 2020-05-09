@@ -8,7 +8,7 @@
     "fis-http-push": "dist/bin/fcp.js"
   },
   "scripts": {
-    "preversion": "npm run lint && npm run cover",
+    "preversion": "npm run lint && npm run test",
     "lint": "eslint src/**/*.ts",
     "docs": "typedoc --out docs src && touch docs/.nojekyll",
     "test": "jest",
