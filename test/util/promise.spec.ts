@@ -1,6 +1,17 @@
-import {singleton} from '../../src/util/promise';
+import {fromCallback, singleton} from '../../src/util/promise';
 
 describe('Promise', () => {
+    describe('.fromCallback()', () => {
+        it('从 callback 成功 resolve', async () => {
+            const ret = await fromCallback(cb => cb(null, 'FOO'));
+            expect(ret).toEqual('FOO');
+        });
+        it('从 callback 的错误 reject', async () => {
+            return expect(
+                fromCallback(cb => cb(new Error('FOO')))
+            ).rejects.toMatchObject({message: 'FOO'})
+        });
+    });
     describe('.singleton()', () => {
         it('只有一个成功的 Promise', async () => {
             const fn = singleton(() => Promise.resolve('FOO'));
