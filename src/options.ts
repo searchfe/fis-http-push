@@ -17,6 +17,8 @@ export interface Options {
     fastFail?: boolean;
     // 并发数，默认为 100
     concurrent?: number;
+    // 并发数，兼容
+    parallelPushCount?: number;
     // 自定义读取用户邮箱的方法
     readEmail?: (savedEmail: string) => Promise<string>;
     // 自定义读取验证码的方法
@@ -41,10 +43,10 @@ export function normalize(options: Options): FullOptions {
         authAPI: options.receiver + '/v1/authorize',
         validateAPI: options.receiver + '/v1/validate',
         retry: defaultTo(options.retry, 3),
-        concurrent: defaultTo(options.concurrent, 100)
+        concurrent: defaultTo(options.concurrent, options.parallelPushCount, 100)
     };
 }
 
-function defaultTo<T>(val: T | undefined, defaultValue: T) {
-    return val === undefined ? defaultValue : val;
+function defaultTo<T>(...args: (T | undefined)[]) {
+    for (const arg of args) if (arg !== undefined) return arg;
 }
