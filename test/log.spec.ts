@@ -1,10 +1,10 @@
-import mock from 'mock-fs';
 import {push, pushFile} from '../src';
 import {clear, FHP_TOKEN_FILE} from '../src/token';
 import {getLogImpl, setLogImpl, restoreLogImpl} from '../src/util/log';
 import {startServer, receiver} from './stub/server';
 import {TOKEN_FILE_CONTENT} from './stub/token';
 import {mockLogImpl} from './stub/log';
+import {mock, restore} from './stub/fs';
 
 describe('日志参数', () => {
     jest.mock('../src/util/log');
@@ -14,7 +14,7 @@ describe('日志参数', () => {
         setLogImpl(mockLogImpl());
     });
     afterEach(() => {
-        mock.restore();
+        restore();
         restoreLogImpl();
     });
 

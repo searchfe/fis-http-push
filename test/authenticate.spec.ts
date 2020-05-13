@@ -1,8 +1,8 @@
-import mock from 'mock-fs';
 import {push, pushFile} from '../src';
 import {clear, FHP_TOKEN_FILE} from '../src/token';
 import {startServer, receiver, serverFileSystem} from './stub/server';
 import {TOKEN_FILE_CONTENT, EMAIL, CODE} from './stub/token';
+import {mock, restore} from './stub/fs';
 
 describe('邮件验证功能', () => {
     const logLevel = 6;
@@ -14,7 +14,7 @@ describe('邮件验证功能', () => {
         readEmail = jest.fn(() => Promise.resolve(EMAIL));
         readCode = jest.fn(() => Promise.resolve(CODE));
     });
-    afterEach(() => mock.restore());
+    afterEach(restore);
 
     it('缓存不存在时提示验证', async () => {
         mock({

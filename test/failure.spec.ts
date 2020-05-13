@@ -1,17 +1,16 @@
-import mock from 'mock-fs';
 import {push, pushFile} from '../src';
 import {clear, FHP_TOKEN_FILE} from '../src/token';
 import {startServer, receiver} from './stub/server';
 import {TOKEN_FILE_CONTENT} from './stub/token';
+import {mock, restore} from './stub/fs';
 
 describe('各种失败场景', () => {
     const opts = {receiver, fastFail: true};
     beforeEach(() => {
         clear();
         startServer();
-        mock.restore();
     });
-    afterEach(() => mock.restore());
+    afterEach(restore);
 
     it('本地文件不存在', () => {
         mock({

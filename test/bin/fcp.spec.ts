@@ -1,4 +1,4 @@
-import mock from 'mock-fs';
+import {mock, restore} from '../stub/fs';
 import {main} from '../../src/bin/main';
 import {clear, FHP_TOKEN_FILE} from '../../src/token';
 import {version} from '../../package.json';
@@ -14,7 +14,7 @@ describe('bin/fcp', () => {
         setLogImpl(mockLogImpl());
     });
     afterEach(() => {
-        mock.restore();
+        restore();
         restoreLogImpl();
     });
 

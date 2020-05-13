@@ -158,16 +158,9 @@ npm test
 
 ### 打日志
 
-由于 mock-fs 和 Jest 对 `console.log` 的处理存在冲突。
-
 1. 生产环境日志请使用 `/src/util/log`；
 2. 开发环境日志请使用 `import {debug} from './util/log'` 并 `export DEBUG=fhp`。
 
 ### 文件 Mock
 
-项目初期使用了 mock-fs 来 mock 文件系统，但有两个副作用：
-
-* jest 会对源码和测试代码进行分析，期间动态 require 的库会崩。比如没法用 console.log。
-* mock-fs@4 采用整体 mock 的方式，没法 patch 既有文件系统。比如代码中的动态 require 会 ENOENT。
-
-目前已经提供了 test/stub/fs.ts 新增测试都使用这个，使用示例见 test/makit.spec.ts。
+提供了 test/stub/fs.ts，使用示例见 test/makit.spec.ts。

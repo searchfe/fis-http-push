@@ -1,8 +1,8 @@
-import mock from 'mock-fs';
 import {listFilesRecursively} from '../../src/util/fs';
+import {mock, restore} from '../stub/fs';
 
 describe('.listFilesRecursively()', () => {
-    afterEach(() => mock.restore());
+    afterEach(() => restore());
 
     it('单个文件', async () => {
         mock({'/foo.txt': 'FOO'});

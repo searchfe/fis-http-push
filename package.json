@@ -52,7 +52,6 @@
     "eslint-plugin-standard": "^4.0.0",
     "jest": "^24.7.1",
     "makit": "^1.15.1",
-    "mock-fs": "^4.12.0",
     "nock": "^12.0.3",
     "nyc": "^13.0.1",
     "semantic-release": "^15.13.31",

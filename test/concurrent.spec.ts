@@ -1,8 +1,8 @@
-import mock from 'mock-fs';
 import {pushFile, push} from '../src';
 import {clear, FHP_TOKEN_FILE} from '../src/token';
 import {startServer, maxConcurrent, receiver, serverFileSystem} from './stub/server';
 import {TOKEN_FILE_CONTENT} from './stub/token';
+import {mock, restore} from './stub/fs';
 
 describe('并发上传场景', () => {
     const logLevel = 6;
@@ -11,7 +11,7 @@ describe('并发上传场景', () => {
         clear();
         startServer();
     });
-    afterEach(() => mock.restore());
+    afterEach(restore);
 
     it('pushFile 上传单个文件', async () => {
         mock({'/foo.txt': 'FOO', [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT});

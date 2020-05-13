@@ -1,8 +1,8 @@
-import mock from 'mock-fs';
 import {fcp} from '../src';
 import {clear, FHP_TOKEN_FILE} from '../src/token';
 import {startServer, receiver, serverFileSystem} from './stub/server';
 import {TOKEN_FILE_CONTENT} from './stub/token';
+import {mock, restore} from './stub/fs';
 
 describe('fcp', () => {
     const logLevel = 6;
@@ -10,7 +10,7 @@ describe('fcp', () => {
         clear();
         startServer();
     });
-    afterEach(() => mock.restore());
+    afterEach(restore);
 
     it('文件到文件', async () => {
         mock({'/foo.txt': 'FOO', [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT});
