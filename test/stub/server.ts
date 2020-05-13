@@ -1,9 +1,7 @@
 import {URLSearchParams} from 'url';
 import nock from 'nock';
-import debugFactory from 'debug';
+import {debug} from '../../src/util/log';
 import {EMAIL, TOKEN, CODE} from './token';
-
-const debug = debugFactory('fhp');
 
 export const receiver = 'http://localhost:1080';
 

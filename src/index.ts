@@ -1,13 +1,11 @@
 import {join} from 'path';
 import assert from 'assert';
-import debugFactory from 'debug';
 import {Context} from 'makit';
 import {Upload} from './upload';
-import {Options} from './options';
+import {parseTarget} from './target';
+import {Options, NormalizedOptions, isNormalizedOptions, normalize} from './options';
 import {stat, listFilesRecursively} from './util/fs';
-import {setLogLevel, success, error} from './util/log';
-
-const debug = debugFactory('fhp');
+import {debug, setLogLevel, success, error} from './util/log';
 
 interface Task {
     // 本地文件路径，基于 cwd 解析
@@ -25,7 +23,8 @@ interface Task {
  * @param dest 远程文件路径，为绝对路径
  * @param options 推送参数
  */
-export async function fcp(sources: string | string[], dest: string, options: Options) {
+export async function fcp(sources: string | string[], dest: string, raw: Options) {
+    const options = normalize(raw);
     setLogLevel(options.logLevel);
     debug('fcp called with', sources, dest, options);
     if (!Array.isArray(sources)) sources = [sources];
@@ -56,7 +55,8 @@ export async function fcp(sources: string | string[], dest: string, options: Opt
  * @param tasks 一组文件推送任务
  * @param options 推送参数
  */
-export async function push(tasks: Task[], options: Options) {
+export async function push(tasks: Task[], raw: Options | NormalizedOptions) {
+    const options = isNormalizedOptions(raw) ? raw : normalize(raw);
     setLogLevel(options.logLevel);
     const upload = new Upload(options);
 
@@ -94,20 +94,19 @@ export async function push(tasks: Task[], options: Options) {
  * @param dest 远程文件路径，为绝对路径
  * @param options 推送参数
  */
-export async function pushFile(source: string, dest: string, options: Options) {
+export async function pushFile(source: string, dest: string, raw: Options | NormalizedOptions) {
+    const options = isNormalizedOptions(raw) ? raw : normalize(raw, {fastFail: true});
     return push([{source, dest}], options);
 }
 
-export function makit(options: Partial<Options> = {}) {
-    return function (ctx: Context) {
-        const url = new URL(ctx.target);
-        return pushFile(ctx.dependencyFullPath(), url.pathname, {
-            receiver: url.origin,
-            ...options
-        });
+export function makit(raw: Options = {}) {
+    return function<T extends {target: string, dependencyFullPath: () => string} = Context> (ctx: T) {
+        const {receiver, dest} = parseTarget(ctx.target);
+        const options = receiver ? normalize(raw, {receiver, fastFail: true}) : normalize(raw, {fastFail: true});
+        return pushFile(ctx.dependencyFullPath(), dest, options);
     };
 }
 
-function failMessage(err: Error, source: string, dest: string, options: Options) {
+function failMessage(err: Error, source: string, dest: string, options: NormalizedOptions) {
     return `Upload file "${source}" to "${options.receiver}${dest}" failed: "${err.message}"`;
 }

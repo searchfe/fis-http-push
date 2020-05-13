@@ -1,6 +1,6 @@
 import debugFactory from 'debug';
 import {getToken} from './token';
-import {FullOptions, Options, normalize} from './options';
+import {NormalizedOptions} from './options';
 import {LimitedConcurrent} from './util/limited-concurrent';
 import {postFormEncoded} from './util/request';
 import {singleton, wait} from './util/promise';
@@ -14,11 +14,9 @@ const endl = '\r\n';
 const concurrentPool = new Map();
 
 export class Upload {
-    private options: FullOptions
     private concurrent: LimitedConcurrent<never>
 
-    constructor(raw: Options) {
-        this.options = normalize(raw);
+    constructor(private options: NormalizedOptions) {
         this.concurrent = this.createConcurrentInstance();
     }
 

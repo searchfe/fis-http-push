@@ -57,7 +57,8 @@ export function raw(...args) {
     return impl(OutStream.STDOUT, LogLevel.INFO, 'raw', ...args);
 }
 export function debug(...args) {
-    return impl(OutStream.STDERR, LogLevel.DEBUG, 'raw', ...args);
+    const level = process.env.DEBUG === 'fhp' ? Infinity : LogLevel.DEBUG;
+    return impl(OutStream.STDERR, level, 'raw', ...args);
 }
 
 export function dateStr(now = new Date()) {
