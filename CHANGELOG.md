@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/searchfe/fis-http-push/compare/v1.4.0...v1.5.0) (2020-05-13)
+
+
+### Features
+
+* support config file name as options ([5e1fc3b](https://github.com/searchfe/fis-http-push/commit/5e1fc3b5dace2a42a64806f549553a62132e7788))
+
 # [1.4.0](https://github.com/searchfe/fis-http-push/compare/v1.3.1...v1.4.0) (2020-05-09)
 
 
