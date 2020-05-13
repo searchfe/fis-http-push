@@ -18,11 +18,10 @@ export async function main(argv: string[]) {
     const recursive = argMap['--recursive'] || argMap['-r'];
     const debug = argMap['--debug'] || argMap['-d'];
     const quiet = argMap['--quiet'] || argMap['-q'];
-
     if (help) return raw(helpMessage(name));
     if (version) return raw(require(resolve(__dirname, '../../package.json')).version);
     if (files.length < 2) {
-        throw new Error(`${name} missing file operand\n\n${helpMessage(name)}\n`);
+        throw new Error(`${name} missing file operand, usage:\n\n${helpMessage(name)}`);
     }
     const target = files.pop();
 

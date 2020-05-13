@@ -21,15 +21,9 @@ describe('日志参数', () => {
     it('上传单个文件', async () => {
         mock({'/foo.txt': 'FOO', [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT});
         await pushFile('/foo.txt', '/tmp/foo.txt', {receiver});
-        expect(getLogImpl()['calls']).toHaveLength(2);
-        expect(getLogImpl()['calls'][0]).toMatchObject({
-            color: 'green',
-            message: '/foo.txt >> /tmp/foo.txt'
-        });
-        expect(getLogImpl()['calls'][1]).toMatchObject({
-            color: 'green',
-            message: 'total 1, success 1, fail 0'
-        });
+        expect(getLogImpl()[0]['calls']).toHaveLength(2);
+        expect(getLogImpl()[0]['calls'][0].msg).toContain('/foo.txt >> /tmp/foo.txt');
+        expect(getLogImpl()[0]['calls'][1].msg).toContain('total 1, success 1, fail 0');
     });
 
     it('并发三个文件', async () => {
@@ -44,22 +38,10 @@ describe('日志参数', () => {
             {source: '/bar.txt', dest: '/tmp/bar.txt'},
             {source: '/coo.txt', dest: '/tmp/coo.txt'}
         ], {receiver});
-        expect(getLogImpl()['calls']).toHaveLength(4);
-        expect(getLogImpl()['calls'][0]).toMatchObject({
-            color: 'green',
-            message: '/foo.txt >> /tmp/foo.txt'
-        });
-        expect(getLogImpl()['calls'][1]).toMatchObject({
-            color: 'green',
-            message: '/bar.txt >> /tmp/bar.txt'
-        });
-        expect(getLogImpl()['calls'][2]).toMatchObject({
-            color: 'green',
-            message: '/coo.txt >> /tmp/coo.txt'
-        });
-        expect(getLogImpl()['calls'][3]).toMatchObject({
-            color: 'green',
-            message: 'total 3, success 3, fail 0'
-        });
+        expect(getLogImpl()[0]['calls']).toHaveLength(4);
+        expect(getLogImpl()[0]['calls'][0].msg).toContain('/foo.txt >> /tmp/foo.txt');
+        expect(getLogImpl()[0]['calls'][1].msg).toContain('/bar.txt >> /tmp/bar.txt');
+        expect(getLogImpl()[0]['calls'][2].msg).toContain('/coo.txt >> /tmp/coo.txt');
+        expect(getLogImpl()[0]['calls'][3].msg).toContain('total 3, success 3, fail 0');
     });
 });

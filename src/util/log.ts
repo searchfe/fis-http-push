@@ -1,10 +1,11 @@
-import {inspect} from 'util';
 import chalk from 'chalk';
 import debugFactory from 'debug';
 
+/* eslint-disable no-console */
+
 export enum OutStream {
-    STDOUT = 'stdout',
-    STDERR = 'stderr'
+    STDOUT = 0,
+    STDERR = 1
 }
 
 export enum LogLevel {
@@ -27,7 +28,7 @@ export function getLogLevel() {
 /**
  * Log Implementation
  */
-let impl = defaultLogImpl;
+let impl = [console.log, console.error];
 export function setLogImpl(newImpl) {
     impl = newImpl;
 }
@@ -35,30 +36,30 @@ export function getLogImpl() {
     return impl;
 }
 export function restoreLogImpl() {
-    impl = defaultLogImpl;
+    impl = [console.log, console.error];
 }
 
 /**
  * Log Interfaces
  */
 export function error(...args) {
-    return impl(OutStream.STDERR, LogLevel.ERROR, 'red', ...args);
+    return doLog(OutStream.STDERR, LogLevel.ERROR, 'red', ...args);
 }
 export function warn(...args) {
-    return impl(OutStream.STDERR, LogLevel.WARN, 'yellow', ...args);
+    return doLog(OutStream.STDERR, LogLevel.WARN, 'yellow', ...args);
 }
 export function success(...args) {
-    return impl(OutStream.STDOUT, LogLevel.INFO, 'green', ...args);
+    return doLog(OutStream.STDOUT, LogLevel.INFO, 'green', ...args);
 }
 export function log(...args) {
-    return impl(OutStream.STDOUT, LogLevel.INFO, 'dim', ...args);
+    return doLog(OutStream.STDOUT, LogLevel.INFO, 'dim', ...args);
 }
 export function raw(...args) {
-    return impl(OutStream.STDOUT, LogLevel.INFO, 'raw', ...args);
+    return impl[0](...args);
 }
 export function debug(...args) {
     const level = process.env.DEBUG === 'fhp' ? Infinity : LogLevel.DEBUG;
-    return impl(OutStream.STDERR, level, 'raw', ...args);
+    return doLog(OutStream.STDERR, level, 'none', ...args);
 }
 
 export function dateStr(now = new Date()) {
@@ -67,16 +68,11 @@ export function dateStr(now = new Date()) {
     return (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d) + ' ' + now.toTimeString().substr(0, 8);
 }
 
-export function defaultLogImpl(out: OutStream, level: LogLevel, color: string, ...args) {
+export function doLog(out: OutStream, level: LogLevel, color: string, ...args) {
     if (level < logLevel) return;
 
-    let timeInfo = '[' + dateStr() + ']';
-    let str = color === 'raw' ? timeInfo : chalk[color](timeInfo);
-    for (const arg of args) {
-        str += ' ';
-        str += inspect(arg);
-    }
-    str += '\n';
-    process[out].write(str);
-    return str;
+    const timeInfo = '[' + dateStr() + ']';
+    args.unshift(color === 'none' ? timeInfo : chalk[color](timeInfo));
+    impl[out](...args);
+    return args;
 }

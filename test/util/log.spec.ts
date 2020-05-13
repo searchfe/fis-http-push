@@ -1,4 +1,4 @@
-import {warn, OutStream, defaultLogImpl, setLogLevel, getLogLevel} from '../../src/util/log';
+import {warn, OutStream, doLog, setLogLevel, getLogLevel} from '../../src/util/log';
 
 describe('.setLogLevel()', () => {
     it('设置日志级别可以生效', async () => {
@@ -7,24 +7,28 @@ describe('.setLogLevel()', () => {
     });
 });
 
-describe('defaultLogImpl', () => {
+describe('doLog()', () => {
     it('格式化日志', () => {
-        const str = defaultLogImpl(OutStream.STDOUT, 6, 'raw', 'foo');
-        expect(str).toMatch(/^\[\d\d-\d\d \d\d:\d\d:\d\d\] 'foo'\n$/);
+        const args = doLog(OutStream.STDOUT, 6, 'none', 'foo');
+        expect(args).toHaveLength(2);
+        expect(args[0]).toMatch(/^\[\d\d-\d\d \d\d:\d\d:\d\d\]$/);
+        expect(args[1]).toEqual('foo');
     });
     it('绿色的日志', () => {
-        const str = defaultLogImpl(OutStream.STDOUT, 6, 'green', 'foo');
-        expect(str).toContain('\u001b[32m');
-        expect(str).toContain('\u001b[39m');
-        expect(str).toContain('\'foo\'');
+        const args = doLog(OutStream.STDOUT, 6, 'green', 'foo');
+        expect(args).toHaveLength(2);
+        expect(args[0]).toContain('\u001b[32m');
+        expect(args[0]).toContain('\u001b[39m');
+        expect(args[1]).toEqual('foo');
     });
 });
 
 describe('.warn()', () => {
     it('黄色的日志', async () => {
-        const str = warn('foo');
-        expect(str).toContain('\u001b[33m');
-        expect(str).toContain('\u001b[39m');
-        expect(str).toContain('\'foo\'');
+        const args = warn('foo');
+        expect(args).toHaveLength(2);
+        expect(args[0]).toContain('\u001b[33m');
+        expect(args[0]).toContain('\u001b[39m');
+        expect(args[1]).toEqual('foo');
     });
 });

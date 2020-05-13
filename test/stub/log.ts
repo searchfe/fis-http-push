@@ -1,10 +1,20 @@
-import {getLogLevel, LogLevel, OutStream} from '../../src/util/log';
+import {inspect} from 'util';
 
 export function mockLogImpl() {
-    function impl(out: OutStream, level: LogLevel, color: string, ...args) {
-        if (level < getLogLevel()) return;
-        impl.calls.push({out, color, args, message: args.join(' ')});
+    function stdout(...args) {
+        args['msg'] = args.map(serialize).join(' ');
+        stdout.calls.push(args);
     }
-    impl.calls = [];
-    return impl;
+    function stderr(...args) {
+        args['msg'] = args.map(serialize).join(' ');
+        stderr.calls.push(args);
+    }
+    stdout.calls = [];
+    stderr.calls = [];
+    return [stdout, stderr];
+}
+
+function serialize(arg) {
+    if (typeof arg === 'string') return arg;
+    return inspect(arg);
 }
