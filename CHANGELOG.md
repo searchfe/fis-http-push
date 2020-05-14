@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/searchfe/fis-http-push/compare/v1.5.0...v1.5.1) (2020-05-14)
+
+
+### Bug Fixes
+
+* --help, --version output ([cd00723](https://github.com/searchfe/fis-http-push/commit/cd00723627f634dc720bdb27b42e84574981cab3))
+
 # [1.5.0](https://github.com/searchfe/fis-http-push/compare/v1.4.0...v1.5.0) (2020-05-13)
 
 
