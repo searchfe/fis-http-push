@@ -39,6 +39,18 @@ pushFile('./main.js', '/var/www/main.js', options);
 push([{source: './main.js', dest: '/var/www/main.js'}], options);
 ```
 
+`options` 中可以包含如下参数：
+
+* receiver `string`：服务端接收 URL，例如：http://example.com:8210
+* logLevel `number`：日志级别（0-6），默认为 LogLevel.INFO(2)。0 为 DEBUG，6 为 NONE。
+* recursive `boolean`：是否递归，默认为 false。SOURCE 为目录时必须指定。
+* retry `number`：重试次数，默认为 3。
+* fastFail `boolean`：是否在第一个错误时退出，默认为 false。
+* concurrent `number`：并发数，默认为 100
+* parallelPushCount `number`：concurrent 的别名，兼容旧版配置。
+* readEmail `(savedEmail: string) => Promise<string>`：自定义读取用户邮箱的方法。
+* readCode: `() => Promise<string>`：自定义读取验证码的方法。
+
 ## 命令行接口
 
 安装：
@@ -67,6 +79,10 @@ Options:
   --version        Show version number          [boolean]
   --help           Show usage instructions.     [boolean]
   --recursive, -r  push directories recursively [boolean]
+  --concurrent, -c max concurrent http request  [number]
+  --loglevel, -l   0,1,2,3,4,5,6                [number]
+  --quiet, -q      print nothing, equiv -l 6    [boolean]
+  --debug, -d      debug mode, equiv -l 0       [boolean]
 
 Examples:
   fcp ./a.txt http://example.com:8210/tmp/a.txt  a.txt -> /tmp/a.txt
