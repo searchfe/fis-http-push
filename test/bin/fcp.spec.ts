@@ -43,9 +43,8 @@ describe('bin/fcp', () => {
         mock({'/foo.txt': 'FOO', [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT});
         await main(['node', 'fcp', '/foo.txt', `${receiver}/tmp/foo.txt`]);
 
-        expect(getLogImpl()[0]['calls']).toHaveLength(2);
+        expect(getLogImpl()[0]['calls']).toHaveLength(1);
         expect(getLogImpl()[0]['calls'][0].msg).toContain('/foo.txt >> /tmp/foo.txt');
-        expect(getLogImpl()[0]['calls'][1].msg).toContain('total 1, success 1, fail 0');
         expect(serverFileSystem.get('/tmp/foo.txt')).toEqual('FOO');
     });
 
@@ -59,8 +58,7 @@ describe('bin/fcp', () => {
     it('远程发生未知错误，正常退出并打印错误', async () => {
         mock({'/foo.txt': 'FOO', [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT});
         await main(['node', 'fcp', '/foo.txt', `${receiver}/unkown-error`]);
-        expect(getLogImpl()[0]['calls']).toHaveLength(1);
-        expect(getLogImpl()[0]['calls'][0].msg).toContain('total 1, success 0, fail 1');
+        expect(getLogImpl()[0]['calls']).toHaveLength(0);
         expect(getLogImpl()[1]['calls']).toHaveLength(1);
         expect(getLogImpl()[1]['calls'][0].msg).toContain('Upload file "/foo.txt" to "http://localhost:1080/unkown-error" failed: "500 UNKOWN"');
         expect(serverFileSystem.get('/tmp/foo.txt')).toBeUndefined();

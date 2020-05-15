@@ -21,9 +21,8 @@ describe('日志参数', () => {
     it('上传单个文件', async () => {
         mock({'/foo.txt': 'FOO', [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT});
         await pushFile('/foo.txt', '/tmp/foo.txt', {receiver});
-        expect(getLogImpl()[0]['calls']).toHaveLength(2);
+        expect(getLogImpl()[0]['calls']).toHaveLength(1);
         expect(getLogImpl()[0]['calls'][0].msg).toContain('/foo.txt >> /tmp/foo.txt');
-        expect(getLogImpl()[0]['calls'][1].msg).toContain('total 1, success 1, fail 0');
     });
 
     it('并发三个文件', async () => {

@@ -1,3 +1,4 @@
+import {resolve} from 'path';
 import {debug, LogLevel} from './util/log';
 
 type OnEnd = (totalCount: number, successCount: number, failCount: number) => void
@@ -42,7 +43,7 @@ export interface NormalizedOptions extends Partial<OptionsLiteral> {
 
 export function normalize(raw: Options, additional: Partial<OptionsLiteral> = {}): NormalizedOptions {
     const options: Partial<OptionsLiteral> = {
-        ...(typeof raw === 'string' ? require(raw) : raw),
+        ...(typeof raw === 'string' ? require(resolve(process.cwd(), raw)) : raw),
         ...additional
     };
     debug('options', options, 'parsed from raw: ', raw, 'additional:', additional);

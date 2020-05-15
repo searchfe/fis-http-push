@@ -84,7 +84,9 @@ export async function push(tasks: Task[], raw: Options | NormalizedOptions) {
         }
         throw err;
     });
-    success(`total ${pending.length}, success ${successCount}, fail ${failCount}`);
+    if (tasks.length > 1) {
+        success(`total ${pending.length}, success ${successCount}, fail ${failCount}`);
+    }
 }
 
 /**
