@@ -1,3 +1,10 @@
+## [1.5.2](https://github.com/searchfe/fis-http-push/compare/v1.5.1...v1.5.2) (2020-05-15)
+
+
+### Bug Fixes
+
+* require config file path ([97bd5c6](https://github.com/searchfe/fis-http-push/commit/97bd5c6530618ff2facfae69ee1fbfe8a3ec0f41))
+
 ## [1.5.1](https://github.com/searchfe/fis-http-push/compare/v1.5.0...v1.5.1) (2020-05-14)
 
 
