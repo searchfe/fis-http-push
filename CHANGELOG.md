@@ -1,3 +1,10 @@
+## [1.5.3](https://github.com/searchfe/fis-http-push/compare/v1.5.2...v1.5.3) (2020-06-05)
+
+
+### Bug Fixes
+
+* binary data uploading ([a104e40](https://github.com/searchfe/fis-http-push/commit/a104e4081ad58ffab71dbe8af5d44dc22310811f))
+
 ## [1.5.2](https://github.com/searchfe/fis-http-push/compare/v1.5.1...v1.5.2) (2020-05-15)
 
 
