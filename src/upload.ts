@@ -65,7 +65,9 @@ export class Upload {
         }
         collect.push('--' + boundary + endl);
         collect.push(`Content-Disposition: form-data; name="file"; filename="${path}"`);
-        collect.push(endl + endl + fileContent + endl);
+        collect.push(endl + endl);
+        collect.push(fileContent);
+        collect.push(endl);
         collect.push('--' + boundary + '--' + endl);
         return postFormEncoded(this.options.uploadAPI, boundary, collect);
     }
