@@ -1,3 +1,10 @@
+## [1.5.4](https://github.com/searchfe/fis-http-push/compare/v1.5.3...v1.5.4) (2020-06-30)
+
+
+### Bug Fixes
+
+* token 为空的情况 ([4a6ee43](https://github.com/searchfe/fis-http-push/commit/4a6ee4340438d36ac6b03ff862f8d081f1ab9ea7))
+
 ## [1.5.3](https://github.com/searchfe/fis-http-push/compare/v1.5.2...v1.5.3) (2020-06-05)
 
 
