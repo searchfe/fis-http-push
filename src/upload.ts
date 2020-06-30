@@ -40,7 +40,9 @@ export class Upload {
             return await this.uploadFile(src, target);
         }
         catch (err) {
-            if (err.errno === 100305) {
+            debug('upload error', err);
+            // 100305: token 失效，100302：token 为空
+            if (err.errno === 100305 || err.errno === 100302) {
                 const token = await getToken();
                 if (token.email) debug('Token is invalid: ' + err.message + '\n');
                 else debug('Authentication required');
