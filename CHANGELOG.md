@@ -1,3 +1,10 @@
+## [1.5.5](https://github.com/searchfe/fis-http-push/compare/v1.5.4...v1.5.5) (2020-07-14)
+
+
+### Bug Fixes
+
+* add debug as dependency ([dc21f0a](https://github.com/searchfe/fis-http-push/commit/dc21f0a6d5133d9e1daadb07bc874689a2f8b591))
+
 ## [1.5.4](https://github.com/searchfe/fis-http-push/compare/v1.5.3...v1.5.4) (2020-06-30)
 
 
