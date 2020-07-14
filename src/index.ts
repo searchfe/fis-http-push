@@ -5,7 +5,7 @@ import {Upload} from './upload';
 import {parseTarget} from './target';
 import {Options, NormalizedOptions, isNormalizedOptions, normalize} from './options';
 import {stat, listFilesRecursively} from './util/fs';
-import {debug, setLogLevel, success, error} from './util/log';
+import {debug, setLogLevel, success, error, log} from './util/log';
 
 interface Task {
     // 本地文件路径，基于 cwd 解析
@@ -36,7 +36,7 @@ export async function fcp(sources: string | string[], dest: string, raw: Options
         // source: ./foo/dir or dir/ or dir, dest: /tmp/foo or /tmp/foo/
         if (sourceStat.isDirectory()) {
             assert(options.recursive, `-r not specified; omitting directory ${source}`);
-            for (const file of await listFilesRecursively(source.replace(/\/$/g, ''))) {
+            for (const file of await listFilesRecursively(source.replace(/\/$/, ''))) {
                 // file: ./foo/dir/foo.txt or dir/foo.txt
                 const destFileName = copyInto ? join(dest, file) : join(dest, file.substr(source.length + 1));
                 tasks.push({source: file, dest: destFileName});
@@ -46,7 +46,14 @@ export async function fcp(sources: string | string[], dest: string, raw: Options
             tasks.push({source, dest: copyInto ? join(dest, source) : dest});
         }
     }
-    return push(tasks, options);
+    if (options.dryrun) {
+        for (const task of tasks) {
+            log(`${task.source} -> ${task.dest}`);
+        }
+    }
+    else {
+        return push(tasks, options);
+    }
 }
 
 /**

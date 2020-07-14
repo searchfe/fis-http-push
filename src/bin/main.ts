@@ -27,6 +27,7 @@ export async function main(argv: string[]) {
     const recursive = argMap['--recursive'] || argMap['-r'];
     const debug = argMap['--debug'] || argMap['-d'];
     const quiet = argMap['--quiet'] || argMap['-q'];
+    const dryrun = argMap['--dryrun'] || argMap['-D'];
     const concurrent = argMap['--concurrent'] || argMap['-c'];
     const logLevel = argMap['--loglevel'] || argMap['-l'];
     if (help) return raw(helpMessage(name));
@@ -42,6 +43,7 @@ export async function main(argv: string[]) {
     if (quiet) options['logLevel'] = LogLevel.NONE;
     if (logLevel) options['logLevel'] = +logLevel;
     if (recursive) options['recursive'] = true;
+    if (dryrun) options['dryrun'] = true;
     if (concurrent) options['concurrent'] = +concurrent;
     return fcp(files, url.pathname, options);
 }
@@ -60,6 +62,7 @@ Options:
   --concurrent, -c max concurrent http request  [number]
   --loglevel, -l   0,1,2,3,4,5,6                [number]
   --quiet, -q      print nothing, equiv -l 6    [boolean]
+  --dryrun, -D     print tasks without push     [boolean]
   --debug, -d      debug mode, equiv -l 0       [boolean]
 
 Examples:

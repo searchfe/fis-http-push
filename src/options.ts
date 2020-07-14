@@ -26,6 +26,8 @@ type OptionsLiteral = {
     readEmail: (savedEmail: string) => Promise<string>;
     // 自定义读取验证码的方法
     readCode: () => Promise<string>;
+    // 只打印任务，不发送任何请求
+    dryrun: boolean;
 }
 
 export type Options = OptionsPath | Partial<OptionsLiteral>;
