@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/searchfe/fis-http-push/compare/v1.5.5...v1.6.0) (2020-07-14)
+
+
+### Features
+
+* --dryrun ([da9a11c](https://github.com/searchfe/fis-http-push/commit/da9a11ca30aee86b699f3269d192e38ee3bbdbbb))
+
 ## [1.5.5](https://github.com/searchfe/fis-http-push/compare/v1.5.4...v1.5.5) (2020-07-14)
 
 
