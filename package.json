@@ -80,6 +80,7 @@
   "license": "MIT",
   "author": "",
   "files": [
+    "README.md",
     "dist",
     "*.json",
     "*.md"
