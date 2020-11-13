@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/searchfe/fis-http-push/compare/v1.6.0...v1.6.1) (2020-11-13)
+
+
+### Bug Fixes
+
+* 解决递归变大的 message ([f3fb4cd](https://github.com/searchfe/fis-http-push/commit/f3fb4cd71de1fab36ace09bd28556672b88f3544))
+
 # [1.6.0](https://github.com/searchfe/fis-http-push/compare/v1.5.5...v1.6.0) (2020-07-14)
 
 
