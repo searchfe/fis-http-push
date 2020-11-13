@@ -60,7 +60,7 @@ describe('bin/fcp', () => {
         await main(['node', 'fcp', '/foo.txt', `${receiver}/unkown-error`]);
         expect(getLogImpl()[0]['calls']).toHaveLength(0);
         expect(getLogImpl()[1]['calls']).toHaveLength(1);
-        expect(getLogImpl()[1]['calls'][0].msg).toContain('Upload file "/foo.txt" to "http://localhost:1080/unkown-error" failed: "500 UNKOWN"');
+        expect(getLogImpl()[1]['calls'][0].msg).toContain('Upload file "/foo.txt" to "http://localhost:1080/unkown-error" failed: 500 UNKOWN');
         expect(serverFileSystem.get('/tmp/foo.txt')).toBeUndefined();
     });
 });

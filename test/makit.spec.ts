@@ -69,7 +69,8 @@ describe('makit 插件', () => {
             dependencyFullPath: () => '/foo.txt',
             target: 'receiver:/tmp/foo.txt'
         } as any)).rejects.toMatchObject({
-            message: expect.stringMatching(/Upload file .* failed: .*ENOENT.*/)
+            hrmessage: expect.stringMatching(/Upload file .* failed: .*ENOENT.*/),
+            message: expect.stringMatching(/ENOENT/)
         });
     });
 });

@@ -45,8 +45,8 @@ export interface NormalizedOptions extends Partial<OptionsLiteral> {
 
 export function normalize(raw: Options, additional: Partial<OptionsLiteral> = {}): NormalizedOptions {
     const options: Partial<OptionsLiteral> = {
-        ...(typeof raw === 'string' ? require(resolve(process.cwd(), raw)) : raw),
-        ...additional
+        ...additional,
+        ...(typeof raw === 'string' ? require(resolve(process.cwd(), raw)) : raw)
     };
     debug('options', options, 'parsed from raw: ', raw, 'additional:', additional);
     if (!options.receiver) throw new Error('options.receiver is required!');

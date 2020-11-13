@@ -70,29 +70,23 @@ export async function push(tasks: Task[], raw: Options | NormalizedOptions) {
     let successCount = 0;
     let failCount = 0;
 
-    const pending = tasks.map(
-        ({source, dest}) => upload.upload(source, dest)
-            .then(() => {
-                successCount++;
-                success(source, '>>', dest);
-            })
-            .catch((err: Error) => {
-                failCount++;
-                err['task'] = {source, dest};
-                if (options.fastFail) throw err;
-                error(failMessage(err, source, dest, options));
-            })
-    );
-
-    await Promise.all(pending).catch(err => {
-        if (err['task']) {
-            const {source, dest} = err['task'];
-            err.message = failMessage(err, source, dest, options);
-        }
-        throw err;
-    });
+    await Promise.all(tasks.map(pushTask));
     if (tasks.length > 1) {
-        success(`total ${pending.length}, success ${successCount}, fail ${failCount}`);
+        success(`total ${tasks.length}, success ${successCount}, fail ${failCount}`);
+    }
+
+    async function pushTask({source, dest}) {
+        try {
+            await upload.upload(source, dest);
+            successCount++;
+            success(source, '>>', dest);
+        }
+        catch (err) {
+            failCount++;
+            err.hrmessage = failMessage(err.message, source, dest, options);
+            if (options.fastFail) throw err;
+            error(err.hrmessage);
+        }
     }
 }
 
@@ -116,6 +110,6 @@ export function makit(raw: Options = {}) {
     };
 }
 
-function failMessage(err: Error, source: string, dest: string, options: NormalizedOptions) {
-    return `Upload file "${source}" to "${options.receiver}${dest}" failed: "${err.message}"`;
+function failMessage(message: string, source: string, dest: string, options: NormalizedOptions) {
+    return `Upload file "${source}" to "${options.receiver}${dest}" failed: ${message}`;
 }
