@@ -24,10 +24,10 @@ export async function main(argv: string[]) {
 
     const help = argMap['--help'] || argMap['-h'];
     const version = argMap['--version'] || argMap['-v'];
-    const recursive = argMap['--recursive'] || argMap['-r'];
+    const recursive = !!(argMap['--recursive'] || argMap['-r']);
     const debug = argMap['--debug'] || argMap['-d'];
     const quiet = argMap['--quiet'] || argMap['-q'];
-    const dryrun = argMap['--dryrun'] || argMap['-D'];
+    const dryrun = !!(argMap['--dryrun'] || argMap['-D']);
     const concurrent = argMap['--concurrent'] || argMap['-c'];
     const logLevel = argMap['--loglevel'] || argMap['-l'];
     if (help) return raw(helpMessage(name));
@@ -35,16 +35,14 @@ export async function main(argv: string[]) {
     if (files.length < 2) {
         throw new Error(`${name} missing file operand, usage:\n\n${helpMessage(name)}`);
     }
-    const options = {};
     const target = files.pop();
     const url = new URL(target);
-    options['receiver'] = url.origin;
+    const options = {
+        receiver: url.origin, recursive, dryrun, concurrent
+    };
     if (debug) options['logLevel'] = LogLevel.DEBUG;
     if (quiet) options['logLevel'] = LogLevel.NONE;
     if (logLevel) options['logLevel'] = +logLevel;
-    if (recursive) options['recursive'] = true;
-    if (dryrun) options['dryrun'] = true;
-    if (concurrent) options['concurrent'] = +concurrent;
     return fcp(files, url.pathname, options);
 }
 

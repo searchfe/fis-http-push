@@ -63,4 +63,18 @@ describe('bin/fcp', () => {
         expect(getLogImpl()[1]['calls'][0].msg).toContain('Upload file "/foo.txt" to "http://localhost:1080/unkown-error" failed: 500 UNKOWN');
         expect(serverFileSystem.get('/tmp/foo.txt')).toBeUndefined();
     });
+
+    it('--loglevel 6 时禁用所有日志', async () => {
+        mock({'/foo.txt': 'FOO', [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT});
+        await main(['node', 'fcp', '/foo.txt', '--loglevel', '6', `${receiver}/unkown-error`]);
+        expect(getLogImpl()[0]['calls']).toHaveLength(0);
+        expect(getLogImpl()[1]['calls']).toHaveLength(0);
+    });
+
+    it('--quiet 时禁用所有日志', async () => {
+        mock({'/foo.txt': 'FOO', [FHP_TOKEN_FILE]: TOKEN_FILE_CONTENT});
+        await main(['node', 'fcp', '/foo.txt', '--quiet', `${receiver}/unkown-error`]);
+        expect(getLogImpl()[0]['calls']).toHaveLength(0);
+        expect(getLogImpl()[1]['calls']).toHaveLength(0);
+    });
 });
