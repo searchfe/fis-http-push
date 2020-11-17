@@ -10,8 +10,10 @@ import {debug} from './util/log';
 
 const auth = singleton(authenticate);
 const endl = '\r\n';
-// 每个 receiver 域名一个并发限制
+// 每个 receiver 域名下所有任务共享一个队列
 const concurrentPool = new Map();
+const AUTH_ERR = [100100, 100501, 100101, 100201, 100202, 100302, 100304, 100305];
+const RETRY_ERR = [100102, 100307];
 
 export class Upload {
     private concurrent: LimitedConcurrent<never>
@@ -40,18 +42,19 @@ export class Upload {
             return await this.uploadFile(src, target);
         }
         catch (err) {
-            debug('upload error', err);
-            // 100305: token 失效，100302：token 为空
-            if (err.errno === 100305 || err.errno === 100302) {
-                const token = await getToken();
-                if (token.email) debug('Token is invalid: ' + err.message + '\n');
-                else debug('Authentication required');
+            debug('upload error', err.message);
+            // 对于鉴权错误重新鉴权
+            if (AUTH_ERR.includes(err.errno)) {
+                await getToken();
                 return auth(this.options).then(() => this.uploadFileWithRetry(src, target, retry));
             }
-            // 明确的错误，则直接退出。只重试未知错误。
-            if (err.errno || retry <= 0) throw err;
-            debug('upload error, waiting to retry...');
-            return wait(100).then(() => this.uploadFileWithRetry(src, target, retry - 1));
+            // 对于网络错误重试
+            if ((RETRY_ERR.includes(err.errno) || !err.errno) && retry > 0) {
+                debug('waiting to retry...');
+                return wait(100).then(() => this.uploadFileWithRetry(src, target, retry - 1));
+            }
+            // 其他情况：非网络非鉴权错误（部署路径非法）、重试次数超限
+            throw err;
         }
     }
 
