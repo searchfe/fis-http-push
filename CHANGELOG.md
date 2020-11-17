@@ -1,3 +1,10 @@
+## [1.6.2](https://github.com/searchfe/fis-http-push/compare/v1.6.1...v1.6.2) (2020-11-17)
+
+
+### Bug Fixes
+
+* 补全了哪些错误需要重新鉴权，哪些错误需要重试 ([51e674a](https://github.com/searchfe/fis-http-push/commit/51e674a6cfc9fd2b30681ecaa2869d3dd65131c8))
+
 ## [1.6.1](https://github.com/searchfe/fis-http-push/compare/v1.6.0...v1.6.1) (2020-11-13)
 
 
