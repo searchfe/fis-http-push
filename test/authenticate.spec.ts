@@ -78,6 +78,7 @@ describe('邮件验证功能', () => {
             {source: '/foo.txt', dest: '/tmp/foo'},
             {source: '/bar.txt', dest: '/tmp/bar'}
         ];
+        readEmail = jest.fn(() => new Promise((resolve) => setTimeout(() => resolve(EMAIL), 100)));
         await push(tasks, {receiver, readEmail, readCode, logLevel});
         expect(readEmail).toBeCalledTimes(1);
         expect(readCode).toBeCalledTimes(1);

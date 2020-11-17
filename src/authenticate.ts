@@ -1,11 +1,10 @@
 import * as prompt from 'prompt';
-import debugFactory from 'debug';
 import {postURLEncoded} from './util/request';
 import {getToken, writeToken} from './token';
 import {fromCallback} from './util/promise';
 import {log} from './util/log';
+import {debug} from './util/log';
 
-const debug = debugFactory('fhp');
 prompt.start();
 
 const defaultReadEmail = savedEmail => fromCallback<{email: string}>(cb => prompt.get({

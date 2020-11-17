@@ -1,4 +1,3 @@
-import debugFactory from 'debug';
 import {getToken} from './token';
 import {NormalizedOptions} from './options';
 import {LimitedConcurrent} from './util/limited-concurrent';
@@ -45,7 +44,6 @@ export class Upload {
             debug('upload error', err.message);
             // 对于鉴权错误重新鉴权
             if (AUTH_ERR.includes(err.errno)) {
-                await getToken();
                 return auth(this.options).then(() => this.uploadFileWithRetry(src, target, retry));
             }
             // 对于网络错误重试

@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import debugFactory from 'debug';
 
 /* eslint-disable no-console */
 
