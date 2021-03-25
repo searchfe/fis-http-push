@@ -1,6 +1,5 @@
 import {join} from 'path';
 import assert from 'assert';
-import {Context} from 'makit';
 import {Upload} from './upload';
 import {parseTarget} from './target';
 import {Options, NormalizedOptions, isNormalizedOptions, normalize} from './options';
@@ -103,7 +102,7 @@ export async function pushFile(source: string, dest: string, raw: Options | Norm
 }
 
 export function makit(raw: Options = {}) {
-    return function<T extends {target: string, dependencyFullPath: () => string} = Context> (ctx: T) {
+    return function<T extends {target: string, dependencyFullPath: () => string}> (ctx: T) {
         const {receiver, dest} = parseTarget(ctx.target);
         const options = receiver ? normalize(raw, {receiver, fastFail: true}) : normalize(raw, {fastFail: true});
         return pushFile(ctx.dependencyFullPath(), dest, options);
