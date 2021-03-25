@@ -1,3 +1,10 @@
+## [1.6.3](https://github.com/searchfe/fis-http-push/compare/v1.6.2...v1.6.3) (2021-03-25)
+
+
+### Bug Fixes
+
+* remove makit dependency, fixes [#9](https://github.com/searchfe/fis-http-push/issues/9) ([7f9bd3c](https://github.com/searchfe/fis-http-push/commit/7f9bd3cffaec1450f67b121f8194ef9d6e90adca))
+
 ## [1.6.2](https://github.com/searchfe/fis-http-push/compare/v1.6.1...v1.6.2) (2020-11-17)
 
 
